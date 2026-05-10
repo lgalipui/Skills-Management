@@ -1,0 +1,39 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary-50: #f0fdf4;
+  --color-primary-100: #dcfce7;
+  --color-primary-500: #22c55e;
+  --color-primary-600: #16a34a;
+  --color-primary-700: #15803d;
+  --color-primary-800: #166534;
+  --color-primary-900: #14532d;
+  
+  /* Colores Corporativos Cajamar (Aproximación Premium) */
+  --color-cajamar-green: #007A33;
+  --color-cajamar-dark: #005021;
+  --color-cajamar-light: #E6F2EB;
+}
+
+@layer base {
+  body {
+    background-color: #f8fafc; /* bg-slate-50 */
+    color: #0f172a; /* text-slate-900 */
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+}
+
+/* Custom Utilities for Premium animations */
+@layer utilities {
+  .glass-effect {
+    @apply bg-white/70 backdrop-blur-md border border-white/20 shadow-sm;
+  }
+  
+  .glass-panel {
+    @apply bg-white/90 backdrop-blur-xl border border-white/40 shadow-xl;
+  }
+
+  .hover-lift {
+    @apply transition-transform duration-300 hover:-translate-y-1 hover:shadow-lg;
+  }
+}
