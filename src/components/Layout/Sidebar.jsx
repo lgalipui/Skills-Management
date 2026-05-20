@@ -10,7 +10,9 @@ import {
   TrendingUp, 
   Briefcase, 
   Search, 
-  Settings 
+  Settings,
+  BarChart3,
+  Sparkles
 } from 'lucide-react';
 import clsx from 'clsx';
 
@@ -27,6 +29,8 @@ export const Sidebar = () => {
     { path: '/mybadges', label: 'MyBadges', icon: Award, roles: ['Employee', 'Manager', 'RRHH'] },
     { path: '/mynewroles', label: 'MyNewRoles', icon: TrendingUp, roles: ['Employee', 'Manager', 'RRHH'] },
     { path: '/myopportunities', label: 'MyOpportunities', icon: Briefcase, roles: ['Employee', 'Manager', 'RRHH'] },
+    { path: '/otherskills', label: 'Other Skills', icon: Sparkles, roles: ['Employee', 'Manager', 'RRHH'] },
+    { path: '/hr-dashboard', label: 'Dashboard RRHH', icon: BarChart3, roles: ['RRHH'] },
     { path: '/talentscout', label: 'Internal Talent Scout', icon: Search, roles: ['RRHH'] },
     { path: '/workforce', label: 'Gestión de Plantilla', icon: Users, roles: ['RRHH'] },
     { path: '/admin', label: 'Gestión Maestros', icon: Settings, roles: ['RRHH'] },

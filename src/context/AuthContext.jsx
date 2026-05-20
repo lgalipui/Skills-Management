@@ -38,6 +38,30 @@ const mapInitialUsers = (rawUsers) => {
     if (u.id === 3) {
       return { ...u, orgUnitId: 'org-8', level: 'Senior' };
     }
+    if (u.id === 4) {
+      return { ...u, orgUnitId: 'org-4', level: 'Junior' };
+    }
+    if (u.id === 5) {
+      return { ...u, orgUnitId: 'org-5', level: 'Senior' };
+    }
+    if (u.id === 6) {
+      return { ...u, orgUnitId: 'org-3', level: 'Senior' };
+    }
+    if (u.id === 7) {
+      return { ...u, orgUnitId: 'org-div-1', level: 'Lead' };
+    }
+    if (u.id === 8) {
+      return { ...u, orgUnitId: 'org-9', level: 'Junior' };
+    }
+    if (u.id === 9) {
+      return { ...u, orgUnitId: 'org-div-2', level: 'Lead' };
+    }
+    if (u.id === 10) {
+      return { ...u, orgUnitId: 'org-4', level: 'Senior' };
+    }
+    if (u.id === 11) {
+      return { ...u, orgUnitId: 'org-4', level: 'Junior' };
+    }
     return { ...u, orgUnitId: null, level: 'Junior' };
   });
 };
@@ -152,6 +176,45 @@ export const AuthProvider = ({ children }) => {
     setUsers(prev => prev.filter(u => u.id !== userId));
   };
 
+  // Habilidades Personalizadas
+  const addCustomSkill = (userId, newSkill) => {
+    setUsers(prev => prev.map(u => {
+      if (u.id === userId) {
+        if (u.skills.some(s => s && s.name.toLowerCase() === newSkill.name.toLowerCase())) return u;
+        const skillId = `custom-${Date.now()}`;
+        return {
+          ...u,
+          skills: [...u.skills, { ...newSkill, id: skillId, isCustom: true }]
+        };
+      }
+      return u;
+    }));
+  };
+
+  const updateCustomSkillLevel = (userId, skillId, newLevel, isVerified = false) => {
+    setUsers(prev => prev.map(u => {
+      if (u.id === userId) {
+        return {
+          ...u,
+          skills: u.skills.map(s => s && s.id === skillId ? { ...s, level: Number(newLevel), isVerified: isVerified || s.isVerified } : s)
+        };
+      }
+      return u;
+    }));
+  };
+
+  const deleteCustomSkill = (userId, skillId) => {
+    setUsers(prev => prev.map(u => {
+      if (u.id === userId) {
+        return {
+          ...u,
+          skills: u.skills.filter(s => s && s.id !== skillId)
+        };
+      }
+      return u;
+    }));
+  };
+
   // Métodos CRUD de Unidades Organizativas
   const addOrgUnit = (newUnit) => {
     setOrgUnits(prev => {
@@ -200,6 +263,9 @@ export const AuthProvider = ({ children }) => {
       addUser,
       updateUser,
       deleteUser,
+      addCustomSkill,
+      updateCustomSkillLevel,
+      deleteCustomSkill,
       addOrgUnit,
       updateOrgUnit,
       deleteOrgUnit

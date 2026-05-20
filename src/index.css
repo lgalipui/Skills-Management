@@ -37,3 +37,20 @@
     @apply transition-transform duration-300 hover:-translate-y-1 hover:shadow-lg;
   }
 }
+
+/* Custom scrollbar for table container */
+.custom-scrollbar::-webkit-scrollbar {
+  height: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 10px;
+  transition: background 0.3s;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #007A33;
+}

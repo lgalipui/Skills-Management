@@ -12,7 +12,9 @@ export const mockUsers = [
       { id: "s2", name: "Node.js", level: 2, required: 4, category: "Técnica" },
       { id: "s3", name: "Agile", level: 3, required: 3, category: "Metodología" },
       { id: "s7", name: "SQL", level: 2, required: 3, category: "Técnica" },
-      { id: "s8", name: "Comunicación", level: 3, required: 4, category: "Soft Skill" }
+      { id: "s8", name: "Comunicación", level: 3, required: 4, category: "Soft Skill" },
+      { id: "s4", name: "Liderazgo", level: 2, required: 3, category: "Soft Skill" },
+      { id: "s5", name: "Gestión de Talento", level: 3, required: 3, category: "Soft Skill" }
     ],
     badges: [
       { badgeId: "b1", date: "2025-11-12", status: "Obtenido" },
@@ -51,8 +53,141 @@ export const mockUsers = [
       { id: "s6", name: "Comunicación", level: 5, required: 4, category: "Soft Skill" }
     ],
     badges: []
+  },
+  {
+    id: 4,
+    name: "Laura Gómez",
+    role: "Analista Programador",
+    department: "Tecnología",
+    profile: "Employee",
+    avatar: "https://i.pravatar.cc/150?u=4",
+    managerId: 2,
+    skills: [
+      { id: "s1", name: "React", level: 2, required: 3, category: "Técnica" },
+      { id: "s2", name: "Node.js", level: 1, required: 2, category: "Técnica" },
+      { id: "s3", name: "Agile", level: 2, required: 2, category: "Metodología" }
+    ],
+    badges: []
+  },
+  {
+    id: 5,
+    name: "Javier Ruiz",
+    role: "Senior Backend Developer",
+    department: "Tecnología",
+    profile: "Employee",
+    avatar: "https://i.pravatar.cc/150?u=5",
+    managerId: 7,
+    skills: [
+      { id: "s2", name: "Node.js", level: 4, required: 4, category: "Técnica" },
+      { id: "s7", name: "SQL", level: 4, required: 4, category: "Técnica" },
+      { id: "s3", name: "Agile", level: 3, required: 3, category: "Metodología" },
+      { id: "s4", name: "Arquitectura Cloud", level: 2, required: 3, category: "Técnica" }
+    ],
+    badges: [
+      { badgeId: "b5", date: "2025-10-10", status: "Obtenido" }
+    ]
+  },
+  {
+    id: 6,
+    name: "Sofía Ramos",
+    role: "Scrum Master",
+    department: "Tecnología",
+    profile: "Employee",
+    avatar: "https://i.pravatar.cc/150?u=6",
+    managerId: 9,
+    skills: [
+      { id: "s3", name: "Agile", level: 5, required: 5, category: "Metodología" },
+      { id: "s6", name: "Comunicación", level: 4, required: 4, category: "Soft Skill" },
+      { id: "s4", name: "Liderazgo", level: 3, required: 4, category: "Soft Skill" }
+    ],
+    badges: [
+      { badgeId: "b2", date: "2025-05-18", status: "Obtenido" }
+    ]
+  },
+  {
+    id: 7,
+    name: "Miguel Hernández",
+    role: "Lead Architect",
+    department: "Tecnología",
+    profile: "Manager",
+    avatar: "https://i.pravatar.cc/150?u=7",
+    managerId: 2,
+    skills: [
+      { id: "s4", name: "Arquitectura Cloud", level: 5, required: 5, category: "Técnica" },
+      { id: "s2", name: "Node.js", level: 5, required: 5, category: "Técnica" },
+      { id: "s7", name: "SQL", level: 4, required: 4, category: "Técnica" },
+      { id: "s5", name: "Liderazgo", level: 4, required: 4, category: "Soft Skill" }
+    ],
+    badges: [
+      { badgeId: "b4", date: "2025-03-22", status: "Obtenido" }
+    ]
+  },
+  {
+    id: 8,
+    name: "Lucía Sanz",
+    role: "HR Specialist",
+    department: "Recursos Humanos",
+    profile: "Employee",
+    avatar: "https://i.pravatar.cc/150?u=8",
+    managerId: 3,
+    skills: [
+      { id: "s5", name: "Gestión de Talento", level: 3, required: 4, category: "Soft Skill" },
+      { id: "s6", name: "Comunicación", level: 4, required: 4, category: "Soft Skill" }
+    ],
+    badges: []
+  },
+  {
+    id: 9,
+    name: "Daniel Alarcón",
+    role: "Manager de Canales",
+    department: "Tecnología",
+    profile: "Manager",
+    avatar: "https://i.pravatar.cc/150?u=9",
+    managerId: null,
+    skills: [
+      { id: "s5", name: "Liderazgo", level: 5, required: 5, category: "Soft Skill" },
+      { id: "s6", name: "Comunicación", level: 5, required: 5, category: "Soft Skill" },
+      { id: "s3", name: "Agile", level: 4, required: 4, category: "Metodología" }
+    ],
+    badges: [
+      { badgeId: "b6", date: "2024-12-05", status: "Obtenido" }
+    ]
+  },
+  {
+    id: 10,
+    name: "Marta Ortiz",
+    role: "Frontend Developer Senior",
+    department: "Tecnología",
+    profile: "Employee",
+    avatar: "https://i.pravatar.cc/150?u=10",
+    managerId: 9,
+    skills: [
+      { id: "s1", name: "React", level: 5, required: 5, category: "Técnica" },
+      { id: "s2", name: "Node.js", level: 3, required: 4, category: "Técnica" },
+      { id: "s3", name: "Agile", level: 4, required: 4, category: "Metodología" },
+      { id: "s6", name: "Comunicación", level: 4, required: 3, category: "Soft Skill" }
+    ],
+    badges: [
+      { badgeId: "b1", date: "2025-11-20", status: "Obtenido" }
+    ]
+  },
+  {
+    id: 11,
+    name: "David Castro",
+    role: "Banca Digital Specialist",
+    department: "Banca Digital",
+    profile: "Employee",
+    avatar: "https://i.pravatar.cc/150?u=11",
+    managerId: 9,
+    skills: [
+      { id: "s1", name: "React", level: 4, required: 4, category: "Técnica" },
+      { id: "s7", name: "SQL", level: 3, required: 3, category: "Técnica" },
+      { id: "s6", name: "Comunicación", level: 3, required: 3, category: "Soft Skill" }
+    ],
+    badges: []
   }
 ];
+
 
 export const mockBadgesCatalog = [
   { id: "b1", title: "React Ninja", description: "Demuestra dominio experto en React y su ecosistema.", icon: "⚛️", skillsValidated: ["React"], levelGranted: 4 },
