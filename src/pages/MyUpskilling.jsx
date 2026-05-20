@@ -144,7 +144,7 @@ export const MyUpskilling = () => {
                           </div>
                           <div className="p-4 flex flex-col flex-1">
                             <div className="flex justify-between items-start mb-1">
-                              <span className="text-xs font-semibold text-[#007A33] bg-emerald-100 px-2 py-0.5 rounded-md">Objetivo: Nivel {course.targetLevel}</span>
+                              <span className="text-xs font-semibold text-[#007A33] bg-emerald-100 px-2 py-0.5 rounded-md">Objetivo: Nivel {Math.min(skill.level + 1, skill.required)}</span>
                               <span className="flex items-center gap-1 text-xs text-slate-500 font-medium">
                                 <Clock size={12} /> {course.duration}
                               </span>

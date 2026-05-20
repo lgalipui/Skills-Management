@@ -11,6 +11,7 @@ import { MyNewRoles } from './pages/MyNewRoles';
 import { MyOpportunities } from './pages/MyOpportunities';
 import { TalentScout } from './pages/TalentScout';
 import { Admin } from './pages/Admin';
+import { WorkforceManagement } from './pages/WorkforceManagement';
 import { Placeholder } from './pages/Placeholder';
 
 function App() {
@@ -27,6 +28,7 @@ function App() {
             <Route path="/mynewroles" element={<MyNewRoles />} />
             <Route path="/myopportunities" element={<MyOpportunities />} />
             <Route path="/talentscout" element={<TalentScout />} />
+            <Route path="/workforce" element={<WorkforceManagement />} />
             <Route path="/admin" element={<Admin />} />
           </Routes>
         </MainLayout>

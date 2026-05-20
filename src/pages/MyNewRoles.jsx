@@ -1,8 +1,8 @@
 import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { mockRoles } from '../data/mockData';
-import { Search, Heart, Map, Briefcase, Filter, ChevronRight, CheckCircle2, AlertTriangle, ArrowRight } from 'lucide-react';
+import { mockRoles, mockCourses } from '../data/mockData';
+import { Search, Heart, Map, Briefcase, Filter, ChevronRight, CheckCircle2, AlertTriangle, ArrowRight, X, BookOpen, Clock } from 'lucide-react';
 import clsx from 'clsx';
 
 export const MyNewRoles = () => {
@@ -12,8 +12,13 @@ export const MyNewRoles = () => {
   const [selectedRole, setSelectedRole] = useState(null);
   const [familyFilter, setFamilyFilter] = useState('Todas');
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const userFavs = favoriteRoles[currentUser.id] || [];
+
+  const getCoursesForSkill = (skillName) => {
+    return mockCourses.filter(c => c.skills.includes(skillName));
+  };
 
   // Ponderaciones
   const getWeight = (priority) => {
@@ -258,7 +263,7 @@ export const MyNewRoles = () => {
             <div className="p-6 border-t border-slate-100 bg-slate-50 flex justify-between items-center">
               <p className="text-sm text-slate-500">¿Quieres prepararte para este rol?</p>
               <button 
-                onClick={() => navigate('/myupskilling')}
+                onClick={() => setIsModalOpen(true)}
                 className="px-6 py-3 bg-slate-900 text-white font-bold rounded-xl shadow-md hover:bg-slate-800 hover:-translate-y-0.5 transition-all flex items-center gap-2"
               >
                 Generar Plan de Reskilling <ArrowRight size={18} />
@@ -268,6 +273,121 @@ export const MyNewRoles = () => {
           </div>
         )}
       </div>
+
+      {/* MODAL PLAN DE RESKILLING */}
+      {isModalOpen && selectedRole && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-white rounded-3xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden animate-in zoom-in-95 duration-300">
+            
+            {/* Modal Header */}
+            <div className="px-8 py-5 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+              <div>
+                <h2 className="text-2xl font-bold text-slate-800">Plan de Reskilling</h2>
+                <p className="text-sm text-slate-500 mt-1">Objetivo: <strong className="text-slate-700">{selectedRole.title}</strong></p>
+              </div>
+              <button 
+                onClick={() => setIsModalOpen(false)}
+                className="p-2 bg-white rounded-full border border-slate-200 text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
+              >
+                <X size={20} />
+              </button>
+            </div>
+            
+            {/* Modal Body */}
+            <div className="flex-1 overflow-y-auto p-8 custom-scrollbar">
+              <div className="bg-amber-50 border border-amber-100 rounded-2xl p-6 mb-8 flex items-start gap-4">
+                <div className="bg-white p-3 rounded-full shadow-sm text-amber-500">
+                  <AlertTriangle size={24} />
+                </div>
+                <div>
+                  <h3 className="font-bold text-amber-900 text-lg">Afinidad actual: {selectedRole.proximity}%</h3>
+                  <p className="text-amber-700 text-sm mt-1">
+                    Para estar completamente preparado para este rol, necesitas desarrollar las siguientes competencias. Aquí tienes nuestra propuesta formativa.
+                  </p>
+                </div>
+              </div>
+
+              <div className="space-y-8">
+                {selectedRole.skillDetails.filter(s => !s.isCovered).map(skill => {
+                  const suggestedCourses = getCoursesForSkill(skill.name);
+                  
+                  return (
+                    <div key={skill.name} className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
+                      <div className="px-8 py-5 border-b bg-slate-50 border-slate-100 flex justify-between items-center">
+                        <div>
+                          <div className="flex items-center gap-3">
+                            <h2 className="text-xl font-bold text-slate-800">{skill.name}</h2>
+                            <span className={clsx(
+                              "text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide",
+                              skill.gap >= 2 ? "bg-amber-100 text-amber-700" : "bg-slate-200 text-slate-600"
+                            )}>
+                              Prioridad {skill.priority}
+                            </span>
+                          </div>
+                          <p className="text-sm text-slate-500 mt-1">
+                            Nivel actual: <strong className="text-slate-700">{skill.actual}</strong> → Requerido: <strong className="text-slate-700">{skill.required}</strong>
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="p-8 bg-white">
+                        <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4 flex items-center gap-2">
+                          <BookOpen size={16} /> Cursos Recomendados
+                        </h3>
+                        
+                        {suggestedCourses.length === 0 ? (
+                          <p className="text-slate-500 italic text-sm">No hay cursos disponibles para esta competencia por el momento.</p>
+                        ) : (
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            {suggestedCourses.map(course => (
+                              <div key={course.id} className="flex border border-slate-100 rounded-2xl overflow-hidden hover:shadow-md transition-shadow group bg-slate-50/30">
+                                <div className="w-24 md:w-32 h-auto shrink-0 overflow-hidden relative">
+                                  <img src={course.image} alt={course.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                                  <div className="absolute inset-0 bg-gradient-to-r from-black/20 to-transparent"></div>
+                                </div>
+                                <div className="p-4 flex flex-col flex-1">
+                                  <div className="flex justify-between items-start mb-1">
+                                    <span className="text-[10px] md:text-xs font-semibold text-[#007A33] bg-emerald-100 px-2 py-0.5 rounded-md">
+                                      Objetivo: Nivel {Math.min(skill.actual + 1, skill.required)}
+                                    </span>
+                                    <span className="flex items-center gap-1 text-[10px] md:text-xs text-slate-500 font-medium">
+                                      <Clock size={12} /> {course.duration}
+                                    </span>
+                                  </div>
+                                  <h4 className="font-bold text-slate-800 leading-tight my-2 line-clamp-2 text-sm md:text-base">{course.title}</h4>
+                                  
+                                  <div className="mt-auto pt-3 border-t border-slate-100 flex items-center justify-between">
+                                    <span className={clsx("text-sm font-bold", course.cost > 0 ? "text-slate-700" : "text-emerald-600")}>
+                                      {course.cost > 0 ? `${course.cost}€` : "Gratuito"}
+                                    </span>
+                                    <button className="w-8 h-8 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center hover:bg-[#007A33] hover:text-white transition-colors">
+                                      <ChevronRight size={16} />
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+            
+            {/* Modal Footer */}
+            <div className="px-8 py-4 border-t border-slate-100 bg-white flex justify-end">
+              <button 
+                onClick={() => setIsModalOpen(false)}
+                className="px-6 py-2.5 bg-slate-100 text-slate-700 font-bold rounded-xl hover:bg-slate-200 transition-colors"
+              >
+                Cerrar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
     </div>
   );

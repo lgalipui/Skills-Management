@@ -42,32 +42,32 @@ const EmployeeView = () => {
   const filteredGallery = gallery.filter(b => filter === 'Todos' || b.status === filter);
 
   return (
-    <div className="space-y-12 animate-in fade-in duration-500">
+    <div className="space-y-6 animate-in fade-in duration-500">
       
       {/* Carrusel de Badges Obtenidos */}
       <section>
-        <div className="flex items-center gap-3 mb-6">
-          <div className="w-10 h-10 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center">
-            <Award size={24} />
+        <div className="flex items-center gap-2.5 mb-3.5">
+          <div className="w-8 h-8 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center shrink-0">
+            <Award size={18} />
           </div>
-          <h2 className="text-2xl font-bold text-slate-800">Tus Trofeos Obtenidos</h2>
+          <h2 className="text-base md:text-lg font-extrabold text-slate-800">Tus Trofeos Obtenidos</h2>
         </div>
 
         {obtainedBadges.length === 0 ? (
-          <div className="bg-slate-50 border border-slate-200 rounded-3xl p-8 text-center text-slate-500">
+          <div className="bg-slate-50 border border-slate-200 rounded-2xl p-6 text-center text-xs text-slate-500">
             Aún no has obtenido insignias. ¡Explora el catálogo y apúntate a un reto!
           </div>
         ) : (
-          <div className="flex gap-6 overflow-x-auto pb-6 pt-2 px-2 snap-x custom-scrollbar">
+          <div className="flex gap-4 overflow-x-auto pb-4 pt-1.5 px-1 snap-x custom-scrollbar">
             {obtainedBadges.map(badge => (
               <div 
                 key={badge.id} 
-                className="snap-start shrink-0 w-64 bg-gradient-to-br from-amber-400 to-orange-500 rounded-3xl p-6 shadow-xl shadow-amber-500/20 text-white relative overflow-hidden group hover:-translate-y-2 transition-transform duration-300"
+                className="snap-start shrink-0 w-48 bg-gradient-to-br from-amber-400 to-orange-500 rounded-2xl p-4.5 shadow-md shadow-amber-500/10 text-white relative overflow-hidden group hover:-translate-y-1.5 transition-transform duration-300"
               >
-                <div className="absolute top-0 right-0 w-32 h-32 bg-white opacity-10 rounded-full blur-2xl transform translate-x-1/3 -translate-y-1/3"></div>
-                <div className="text-6xl mb-4 text-center group-hover:scale-110 transition-transform duration-300">{badge.icon}</div>
-                <h3 className="font-bold text-lg text-center leading-tight mb-2 relative z-10">{badge.title}</h3>
-                <p className="text-xs text-amber-100 text-center relative z-10">Obtenido: {new Date(badge.date).toLocaleDateString()}</p>
+                <div className="absolute top-0 right-0 w-24 h-24 bg-white opacity-10 rounded-full blur-xl transform translate-x-1/3 -translate-y-1/3"></div>
+                <div className="text-4xl mb-2.5 text-center group-hover:scale-110 transition-transform duration-300">{badge.icon}</div>
+                <h3 className="font-extrabold text-sm text-center leading-tight mb-1 relative z-10">{badge.title}</h3>
+                <p className="text-[10px] text-amber-100/90 text-center relative z-10">Obtenido: {new Date(badge.date).toLocaleDateString()}</p>
               </div>
             ))}
           </div>
@@ -75,18 +75,18 @@ const EmployeeView = () => {
       </section>
 
       {/* Galería Completa */}
-      <section className="bg-white rounded-3xl p-8 shadow-sm border border-slate-100">
-        <h2 className="text-2xl font-bold text-slate-800 mb-6">Catálogo de Insignias</h2>
+      <section className="bg-white rounded-2xl p-5 md:p-6 shadow-sm border border-slate-100">
+        <h2 className="text-base md:text-lg font-extrabold text-slate-800 mb-4">Catálogo de Insignias</h2>
         
-        <div className="flex gap-2 mb-8 overflow-x-auto pb-2">
+        <div className="flex gap-1.5 mb-4 overflow-x-auto pb-1">
           {['Todos', 'Disponible', 'En progreso', 'Obtenido'].map(f => (
             <button
               key={f}
               onClick={() => setFilter(f)}
               className={clsx(
-                "px-5 py-2 rounded-full text-sm font-bold whitespace-nowrap transition-colors",
+                "px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-colors",
                 filter === f 
-                  ? "bg-slate-800 text-white shadow-md" 
+                  ? "bg-slate-800 text-white shadow-sm" 
                   : "bg-slate-100 text-slate-600 hover:bg-slate-200"
               )}
             >
@@ -95,23 +95,23 @@ const EmployeeView = () => {
           ))}
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
           {filteredGallery.map(badge => (
             <div 
               key={badge.id} 
               onClick={() => setSelectedBadge(badge)}
               className={clsx(
-                "border rounded-3xl p-6 cursor-pointer hover:-translate-y-1 transition-all duration-300 group flex flex-col items-center text-center",
-                badge.status === 'Obtenido' ? "border-amber-200 bg-amber-50 hover:shadow-lg hover:shadow-amber-100" :
-                badge.status === 'En progreso' ? "border-blue-200 bg-blue-50 hover:shadow-lg hover:shadow-blue-100" :
-                "border-slate-200 bg-white hover:border-slate-300 hover:shadow-md"
+                "border rounded-2xl p-4 cursor-pointer hover:-translate-y-1 transition-all duration-300 group flex flex-col items-center text-center",
+                badge.status === 'Obtenido' ? "border-amber-200 bg-amber-50/70 hover:shadow-md hover:shadow-amber-100/50" :
+                badge.status === 'En progreso' ? "border-blue-200 bg-blue-50/70 hover:shadow-md hover:shadow-blue-100/50" :
+                "border-slate-200 bg-white hover:border-slate-300 hover:shadow-sm"
               )}
             >
-              <div className="text-5xl mb-4 filter drop-shadow-md group-hover:scale-110 transition-transform">{badge.icon}</div>
-              <h4 className="font-bold text-slate-800 mb-2">{badge.title}</h4>
+              <div className="text-3xl mb-2 filter drop-shadow-sm group-hover:scale-110 transition-transform">{badge.icon}</div>
+              <h4 className="font-extrabold text-xs md:text-sm text-slate-800 mb-2 truncate max-w-full">{badge.title}</h4>
               
               <span className={clsx(
-                "text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider mt-auto",
+                "text-[9px] font-extrabold px-2.5 py-0.5 rounded-full uppercase tracking-wider mt-auto",
                 badge.status === 'Obtenido' ? "bg-amber-100 text-amber-700" :
                 badge.status === 'En progreso' ? "bg-blue-100 text-blue-700" :
                 "bg-slate-100 text-slate-500"

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { mockSkillDetails } from '../data/mockData';
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, ResponsiveContainer, Tooltip as RechartsTooltip, Legend } from 'recharts';
 import { CheckCircle2, ChevronRight, ChevronLeft, ShieldAlert, FileSignature } from 'lucide-react';
 import clsx from 'clsx';
@@ -40,14 +41,14 @@ export const SkillsReview = () => {
   const StepIndicator = ({ number, title, active, completed }) => (
     <div className="flex flex-col items-center relative z-10">
       <div className={clsx(
-        "w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg border-4 transition-all duration-300",
-        active ? "bg-[#007A33] border-emerald-200 text-white shadow-lg shadow-emerald-600/30" : 
+        "w-9 h-9 rounded-full flex items-center justify-center font-extrabold text-sm border-2 transition-all duration-300",
+        active ? "bg-[#007A33] border-emerald-150 text-white shadow-md shadow-emerald-600/20" : 
         completed ? "bg-white border-[#007A33] text-[#007A33]" : "bg-slate-50 border-slate-200 text-slate-400"
       )}>
-        {completed && !active ? <CheckCircle2 size={24} /> : number}
+        {completed && !active ? <CheckCircle2 size={16} /> : number}
       </div>
       <span className={clsx(
-        "text-sm font-medium mt-3 whitespace-nowrap",
+        "text-xs font-bold mt-2 whitespace-nowrap",
         active ? "text-[#007A33]" : completed ? "text-slate-800" : "text-slate-400"
       )}>
         {title}
@@ -56,19 +57,19 @@ export const SkillsReview = () => {
   );
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-500 max-w-5xl mx-auto">
-      <div className="bg-white rounded-3xl p-8 shadow-sm border border-slate-100 mb-8 relative overflow-hidden">
-        <h1 className="text-3xl font-bold text-slate-800 relative z-10">Evaluación 360</h1>
-        <p className="text-slate-500 mt-1 relative z-10">Proceso de revisión de competencias y calibración de nivel.</p>
+    <div className="space-y-4 animate-in fade-in duration-500 max-w-5xl mx-auto">
+      <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 mb-2 relative overflow-hidden">
+        <h1 className="text-xl md:text-2xl font-black text-slate-800 relative z-10">Evaluación 360</h1>
+        <p className="text-slate-400 text-xs md:text-sm mt-0.5 relative z-10">Proceso de revisión de competencias y calibración de nivel.</p>
         
         {/* Stepper Visual */}
-        <div className="mt-12 mb-4 relative z-10">
-          <div className="absolute top-6 left-12 right-12 h-1 bg-slate-100 -z-10"></div>
+        <div className="mt-6 mb-1 relative z-10">
+          <div className="absolute top-[18px] left-10 right-10 h-0.5 bg-slate-100 -z-10"></div>
           <div 
-            className="absolute top-6 left-12 h-1 bg-[#007A33] transition-all duration-500 -z-10"
+            className="absolute top-[18px] left-10 h-0.5 bg-[#007A33] transition-all duration-500 -z-10"
             style={{ width: `${((step - 1) / 2) * 100}%` }}
           ></div>
-          <div className="flex justify-between px-6">
+          <div className="flex justify-between px-4">
             <StepIndicator number={1} title="Autoevaluación" active={step === 1} completed={step > 1} />
             <StepIndicator number={2} title="Evaluación Manager" active={step === 2} completed={step > 2} />
             <StepIndicator number={3} title="Calibración" active={step === 3} completed={step > 3} />
@@ -77,7 +78,7 @@ export const SkillsReview = () => {
       </div>
 
       {/* Contenido del Paso */}
-      <div className="bg-white rounded-3xl p-8 shadow-sm border border-slate-100">
+      <div className="bg-white rounded-2xl p-5 md:p-6 shadow-sm border border-slate-100">
         
         {/* PASO 1: Autoevaluación */}
         {step === 1 && (
@@ -96,17 +97,24 @@ export const SkillsReview = () => {
             </p>
 
             <div className="space-y-6">
-              {skillsToEvaluate.map(skill => (
+              {skillsToEvaluate.map(skill => {
+                const details = mockSkillDetails[skill.name] || {};
+                return (
                 <div key={skill.id} className="p-5 rounded-2xl border border-slate-100 hover:border-emerald-200 transition-colors bg-slate-50/50">
-                  <h4 className="font-bold text-slate-800 mb-4">{skill.name}</h4>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div className="mb-4">
+                    <h4 className="font-bold text-slate-800">{skill.name}</h4>
+                    {details.description && (
+                      <p className="text-sm text-slate-500 mt-1">{details.description}</p>
+                    )}
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                     {SCALE.map(s => (
                       <label 
                         key={s.value} 
                         className={clsx(
-                          "flex flex-col items-center justify-center p-3 rounded-xl border-2 cursor-pointer transition-all",
+                          "flex flex-col items-center justify-start p-4 rounded-xl border-2 cursor-pointer transition-all text-center h-full",
                           autoEval[skill.id] === s.value 
-                            ? "border-[#007A33] bg-emerald-50 text-[#007A33]" 
+                            ? "border-[#007A33] bg-emerald-50 text-[#007A33] shadow-sm" 
                             : "border-slate-200 bg-white text-slate-500 hover:border-slate-300"
                         )}
                       >
@@ -118,13 +126,21 @@ export const SkillsReview = () => {
                           onChange={() => setAutoEval(prev => ({ ...prev, [skill.id]: s.value }))}
                           checked={autoEval[skill.id] === s.value}
                         />
-                        <span className="text-lg font-bold mb-1">{s.value}</span>
-                        <span className="text-xs font-medium">{s.label}</span>
+                        <span className="text-xl font-bold mb-1">{s.value}</span>
+                        <span className="text-sm font-semibold mb-2">{s.label}</span>
+                        {details.levels && details.levels[s.value] && (
+                          <span className={clsx(
+                            "text-[11px] leading-snug mt-auto pt-2", 
+                            autoEval[skill.id] === s.value ? "text-emerald-700 font-medium" : "text-slate-500"
+                          )}>
+                            {details.levels[s.value]}
+                          </span>
+                        )}
                       </label>
                     ))}
                   </div>
                 </div>
-              ))}
+              );})}
             </div>
           </div>
         )}
@@ -146,22 +162,29 @@ export const SkillsReview = () => {
             </p>
 
             <div className="space-y-6">
-              {skillsToEvaluate.map(skill => (
+              {skillsToEvaluate.map(skill => {
+                const details = mockSkillDetails[skill.name] || {};
+                return (
                 <div key={skill.id} className="p-5 rounded-2xl border border-slate-100 hover:border-blue-200 transition-colors bg-slate-50/50">
-                  <div className="flex justify-between items-center mb-4">
-                    <h4 className="font-bold text-slate-800">{skill.name}</h4>
-                    <div className="text-xs font-medium bg-emerald-100 text-[#007A33] px-3 py-1 rounded-full">
+                  <div className="flex flex-col md:flex-row md:justify-between md:items-start mb-4 gap-2">
+                    <div>
+                      <h4 className="font-bold text-slate-800">{skill.name}</h4>
+                      {details.description && (
+                        <p className="text-sm text-slate-500 mt-1">{details.description}</p>
+                      )}
+                    </div>
+                    <div className="text-xs font-medium bg-emerald-100 text-[#007A33] px-3 py-1.5 rounded-full shrink-0 h-fit">
                       Autoevaluación: Nivel {autoEval[skill.id]} ({SCALE.find(x => x.value === autoEval[skill.id])?.label})
                     </div>
                   </div>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                     {SCALE.map(s => (
                       <label 
                         key={s.value} 
                         className={clsx(
-                          "flex flex-col items-center justify-center p-3 rounded-xl border-2 cursor-pointer transition-all",
+                          "flex flex-col items-center justify-start p-4 rounded-xl border-2 cursor-pointer transition-all text-center h-full",
                           managerEval[skill.id] === s.value 
-                            ? "border-blue-500 bg-blue-50 text-blue-700" 
+                            ? "border-blue-500 bg-blue-50 text-blue-700 shadow-sm" 
                             : "border-slate-200 bg-white text-slate-500 hover:border-slate-300"
                         )}
                       >
@@ -173,13 +196,21 @@ export const SkillsReview = () => {
                           onChange={() => setManagerEval(prev => ({ ...prev, [skill.id]: s.value }))}
                           checked={managerEval[skill.id] === s.value}
                         />
-                        <span className="text-lg font-bold mb-1">{s.value}</span>
-                        <span className="text-xs font-medium">{s.label}</span>
+                        <span className="text-xl font-bold mb-1">{s.value}</span>
+                        <span className="text-sm font-semibold mb-2">{s.label}</span>
+                        {details.levels && details.levels[s.value] && (
+                          <span className={clsx(
+                            "text-[11px] leading-snug mt-auto pt-2",
+                            managerEval[skill.id] === s.value ? "text-blue-700 font-medium" : "text-slate-500"
+                          )}>
+                            {details.levels[s.value]}
+                          </span>
+                        )}
                       </label>
                     ))}
                   </div>
                 </div>
-              ))}
+              );})}
             </div>
           </div>
         )}

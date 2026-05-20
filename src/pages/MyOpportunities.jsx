@@ -85,33 +85,35 @@ export const MyOpportunities = () => {
   }, [selectedOpp, users, isRRHH]);
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-500">
+    <div className="space-y-3 animate-in fade-in duration-500">
       
       {/* HEADER KPI */}
-      <div className="bg-gradient-to-r from-slate-900 to-[#007A33] rounded-3xl p-8 text-white flex justify-between items-center shadow-lg relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-white opacity-5 rounded-full blur-3xl transform translate-x-1/3 -translate-y-1/3"></div>
+      <div className="bg-gradient-to-r from-slate-900 to-[#007A33] rounded-2xl py-3.5 px-6 text-white flex justify-between items-center shadow-lg relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-48 h-48 bg-white opacity-5 rounded-full blur-2xl transform translate-x-1/3 -translate-y-1/3"></div>
         <div className="relative z-10">
-          <h1 className="text-3xl font-bold mb-1">Vacantes Internas</h1>
-          <p className="text-emerald-100">Movilidad y nuevas oportunidades en la organización.</p>
+          <h1 className="text-xl md:text-2xl font-black mb-0.5">Vacantes Internas</h1>
+          <p className="text-xs md:text-sm text-emerald-100/90">Movilidad y nuevas oportunidades en la organización.</p>
         </div>
         {!isRRHH && (
-          <div className="relative z-10 bg-white/10 backdrop-blur-md px-6 py-4 rounded-2xl border border-white/20 text-center">
-            <span className="block text-4xl font-bold text-emerald-400">{highMatchCount}</span>
-            <span className="text-sm font-medium text-slate-200">Vacantes con &gt;70% Match</span>
+          <div className="relative z-10 bg-white/10 backdrop-blur-md px-4.5 py-2.5 rounded-xl border border-white/20 flex items-center gap-3.5">
+            <span className="text-3xl font-black text-emerald-400 leading-none">{highMatchCount}</span>
+            <span className="text-[11px] font-extrabold text-slate-200 block text-left leading-tight">
+              Vacantes con<br />&gt;70% Match
+            </span>
           </div>
         )}
       </div>
 
-      <div className="flex flex-col md:flex-row gap-6 h-[calc(100vh-16rem)]">
+      <div className="flex flex-col md:flex-row gap-3.5 h-[calc(100vh-14.5rem)]">
         
         {/* PANEL IZQUIERDO: Filtros y Lista */}
-        <div className="w-full md:w-1/3 bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden flex flex-col">
+        <div className="w-full md:w-1/3 bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden flex flex-col">
           
-          <div className="p-6 border-b border-slate-100 bg-slate-50/50 space-y-3">
-            <div className="flex items-center gap-2 bg-white px-3 py-2 rounded-xl border border-slate-200 focus-within:ring-2 focus-within:ring-[#007A33] transition-all">
-              <Building size={16} className="text-slate-400 shrink-0" />
+          <div className="py-2.5 px-3 border-b border-slate-100 bg-slate-50/50 space-y-2">
+            <div className="flex items-center gap-2 bg-white px-2.5 py-1 rounded-lg border border-slate-200 focus-within:ring-2 focus-within:ring-[#007A33] transition-all">
+              <Building size={13} className="text-slate-400 shrink-0" />
               <select 
-                className="w-full bg-transparent text-sm font-medium text-slate-700 outline-none"
+                className="w-full bg-transparent text-xs font-bold text-slate-700 outline-none py-0.5"
                 value={deptFilter}
                 onChange={(e) => setDeptFilter(e.target.value)}
               >
@@ -119,21 +121,21 @@ export const MyOpportunities = () => {
               </select>
             </div>
             
-            <div className="flex items-center gap-2 bg-white px-3 py-2 rounded-xl border border-slate-200 focus-within:ring-2 focus-within:ring-[#007A33] transition-all">
-              <Filter size={16} className="text-slate-400 shrink-0" />
+            <div className="flex items-center gap-2 bg-white px-2.5 py-1 rounded-lg border border-slate-200 focus-within:ring-2 focus-within:ring-[#007A33] transition-all">
+              <Filter size={13} className="text-slate-400 shrink-0" />
               <input 
                 type="text"
                 placeholder="Filtrar por skill (ej. React)..."
-                className="w-full bg-transparent text-sm font-medium text-slate-700 outline-none"
+                className="w-full bg-transparent text-xs font-bold text-slate-700 outline-none py-0.5"
                 value={skillFilter}
                 onChange={(e) => setSkillFilter(e.target.value)}
               />
             </div>
           </div>
 
-          <div className="flex-1 overflow-y-auto p-4 space-y-3 custom-scrollbar">
+          <div className="flex-1 overflow-y-auto p-2.5 space-y-2 custom-scrollbar">
             {filteredOpps.length === 0 ? (
-              <div className="text-center p-8 text-slate-500">No hay vacantes que coincidan con los filtros.</div>
+              <div className="text-center p-4 text-xs text-slate-500">No hay vacantes que coincidan con los filtros.</div>
             ) : (
               filteredOpps.map(opp => {
                 const isSelected = selectedOpp?.id === opp.id;
@@ -142,28 +144,28 @@ export const MyOpportunities = () => {
                     key={opp.id}
                     onClick={() => setSelectedOpp(opp)}
                     className={clsx(
-                      "p-4 rounded-2xl cursor-pointer transition-all border",
+                      "p-3 rounded-xl cursor-pointer transition-all border",
                       isSelected 
                         ? "bg-blue-50/50 border-blue-200 shadow-sm" 
                         : "bg-white border-slate-100 hover:border-slate-300 hover:shadow-sm"
                     )}
                   >
-                    <div className="flex justify-between items-start mb-2">
-                      <h3 className={clsx("font-bold leading-tight", isSelected ? "text-blue-700" : "text-slate-800")}>
+                    <div className="flex justify-between items-start mb-1.5 gap-1.5">
+                      <h3 className={clsx("font-extrabold text-xs md:text-sm leading-tight", isSelected ? "text-blue-700" : "text-slate-800")}>
                         {opp.title}
                       </h3>
                       {!isRRHH && (
                         <span className={clsx(
-                          "text-xs font-bold px-2 py-1 rounded-md ml-2 shrink-0",
+                          "text-[10px] font-extrabold px-1.5 py-0.5 rounded shrink-0",
                           opp.matchPercentage >= 70 ? "bg-emerald-100 text-[#007A33]" : "bg-slate-100 text-slate-600"
                         )}>
                           {opp.matchPercentage}%
                         </span>
                       )}
                     </div>
-                    <div className="text-xs text-slate-500 flex flex-col gap-1">
-                      <span className="flex items-center gap-1"><Building size={12}/> {opp.department}</span>
-                      <span className="flex items-center gap-1"><MapPin size={12}/> {opp.location}</span>
+                    <div className="text-[10px] text-slate-500 flex flex-col gap-1">
+                      <span className="flex items-center gap-1.5"><Building size={12}/> {opp.department}</span>
+                      <span className="flex items-center gap-1.5"><MapPin size={12}/> {opp.location}</span>
                     </div>
                   </div>
                 );
@@ -173,107 +175,107 @@ export const MyOpportunities = () => {
         </div>
 
         {/* PANEL DERECHO: Detalle y Gráfico */}
-        <div className="w-full md:w-2/3 bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden flex flex-col relative">
+        <div className="w-full md:w-2/3 bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden flex flex-col relative">
           {!selectedOpp ? (
-            <div className="flex-1 flex flex-col items-center justify-center text-slate-400 p-8 text-center">
-              <Briefcase size={64} className="mb-4 opacity-20" />
-              <h2 className="text-xl font-bold text-slate-600">Selecciona una vacante</h2>
-              <p>Haz clic en una oportunidad para ver los detalles, comparar tus competencias y aplicar.</p>
+            <div className="flex-1 flex flex-col items-center justify-center text-slate-400 p-6 text-center">
+              <Briefcase size={40} className="mb-2.5 opacity-20" />
+              <h2 className="text-sm font-bold text-slate-600">Selecciona una vacante</h2>
+              <p className="text-[11px] max-w-xs mx-auto">Haz clic en una oportunidad para ver los detalles, comparar tus competencias y aplicar.</p>
             </div>
           ) : (
             <div className="flex flex-col h-full overflow-y-auto custom-scrollbar animate-in slide-in-from-right-4 duration-300">
               
-              <div className="p-8 border-b border-slate-100 bg-slate-50">
-                <div className="flex justify-between items-start mb-4">
+              <div className="py-3 px-4 md:py-3.5 md:px-5 border-b border-slate-100 bg-slate-50/50">
+                <div className="flex justify-between items-start mb-2 gap-3">
                   <div>
-                    <h2 className="text-3xl font-bold text-slate-800 mb-2">{selectedOpp.title}</h2>
-                    <div className="flex flex-wrap gap-4 text-sm font-medium text-slate-600">
-                      <span className="flex items-center gap-1"><Building size={16} className="text-[#007A33]"/> {selectedOpp.department}</span>
-                      <span className="flex items-center gap-1"><MapPin size={16} className="text-[#007A33]"/> {selectedOpp.location}</span>
+                    <h2 className="text-base md:text-lg font-black text-slate-800 mb-0.5 leading-tight">{selectedOpp.title}</h2>
+                    <div className="flex flex-wrap gap-3 text-[10px] font-semibold text-slate-500">
+                      <span className="flex items-center gap-1"><Building size={12} className="text-[#007A33]"/> {selectedOpp.department}</span>
+                      <span className="flex items-center gap-1"><MapPin size={12} className="text-[#007A33]"/> {selectedOpp.location}</span>
                     </div>
                   </div>
                   {!isRRHH && myApplications.includes(selectedOpp.id) && (
-                    <div className="bg-emerald-100 text-[#007A33] px-4 py-2 rounded-xl font-bold text-sm flex items-center gap-2 border border-emerald-200">
-                      <CheckCircle2 size={18} /> Inscrito
+                    <div className="bg-emerald-100 text-[#007A33] px-2.5 py-1 rounded-lg font-bold text-[10px] flex items-center gap-1 border border-emerald-200 shrink-0">
+                      <CheckCircle2 size={12} /> Inscrito
                     </div>
                   )}
                 </div>
-                <p className="text-slate-600 leading-relaxed">{selectedOpp.description}</p>
+                <p className="text-[11px] md:text-xs text-slate-600 leading-relaxed">{selectedOpp.description}</p>
               </div>
 
-              <div className="p-8 flex-1">
+              <div className="p-4 md:p-5 flex-1 flex flex-col min-h-0">
                 {!isRRHH ? (
                   // VISTA EMPLEADO: GRÁFICO DE BARRAS
-                  <>
-                    <h3 className="text-lg font-bold text-slate-800 mb-6 flex items-center gap-2">
-                      <Target size={20} className="text-[#007A33]" /> Comparativa de Competencias
+                  <div className="flex flex-col flex-1 min-h-0">
+                    <h3 className="text-xs font-extrabold text-slate-800 mb-2 flex items-center gap-1.5 shrink-0">
+                      <Target size={14} className="text-[#007A33]" /> Comparativa de Competencias
                     </h3>
                     
-                    <div className="h-64 w-full">
+                    <div className="flex-1 w-full min-h-0 h-44">
                       <ResponsiveContainer width="100%" height="100%">
                         <BarChart
                           data={chartData}
                           layout="vertical"
-                          margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                          margin={{ top: 5, right: 20, left: 0, bottom: 5 }}
                         >
                           <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} stroke="#E2E8F0" />
-                          <XAxis type="number" domain={[0, 5]} ticks={[1, 2, 3, 4, 5]} stroke="#94A3B8" />
-                          <YAxis dataKey="name" type="category" width={120} stroke="#475569" fontWeight="bold" fontSize={12} />
+                          <XAxis type="number" domain={[0, 5]} ticks={[1, 2, 3, 4, 5]} stroke="#94A3B8" fontSize={9} />
+                          <YAxis dataKey="name" type="category" width={80} stroke="#475569" fontWeight="bold" fontSize={9} />
                           <RechartsTooltip 
                             cursor={{fill: '#F1F5F9'}} 
-                            contentStyle={{borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'}}
+                            contentStyle={{borderRadius: '8px', border: 'none', boxShadow: '0 2px 4px -1px rgb(0 0 0 / 0.05)', fontSize: 10}}
                           />
-                          <Legend wrapperStyle={{paddingTop: '20px'}} />
-                          <Bar dataKey="Requerido" fill="#CBD5E1" radius={[0, 4, 4, 0]} barSize={20} />
-                          <Bar dataKey="Actual" fill="#007A33" radius={[0, 4, 4, 0]} barSize={20} />
+                          <Legend wrapperStyle={{paddingTop: '5px', fontSize: 10}} />
+                          <Bar dataKey="Requerido" fill="#CBD5E1" radius={[0, 3, 3, 0]} barSize={12} />
+                          <Bar dataKey="Actual" fill="#007A33" radius={[0, 3, 3, 0]} barSize={12} />
                         </BarChart>
                       </ResponsiveContainer>
                     </div>
 
                     {!myApplications.includes(selectedOpp.id) && (
-                      <div className="mt-8 pt-6 border-t border-slate-100 flex justify-end">
+                      <div className="mt-3 pt-3 border-t border-slate-100 flex justify-end shrink-0">
                         <button 
                           onClick={() => applyToJob(currentUser.id, selectedOpp.id)}
-                          className="px-8 py-4 bg-[#007A33] text-white font-bold rounded-xl shadow-lg shadow-emerald-600/20 hover:bg-[#006028] transition-colors flex items-center gap-2 text-lg"
+                          className="px-4 py-2 bg-[#007A33] text-white font-bold rounded-xl shadow-md shadow-emerald-600/10 hover:bg-[#006028] transition-all flex items-center gap-1.5 text-xs"
                         >
-                          <Send size={20} /> Inscribirse a la Vacante
+                          <Send size={13} /> Inscribirse a la Vacante
                         </button>
                       </div>
                     )}
-                  </>
+                  </div>
                 ) : (
                   // VISTA RRHH: TOP 5 CANDIDATOS
-                  <>
-                    <h3 className="text-lg font-bold text-slate-800 mb-6 flex items-center gap-2">
-                      <Users size={20} className="text-[#007A33]" /> Top 5 Candidatos Internos (Match)
+                  <div className="flex flex-col flex-1 min-h-0">
+                    <h3 className="text-xs font-extrabold text-slate-800 mb-3 flex items-center gap-1.5 shrink-0">
+                      <Users size={14} className="text-[#007A33]" /> Top 5 Candidatos Internos (Match)
                     </h3>
                     
-                    <div className="space-y-4">
+                    <div className="space-y-2 flex-1 overflow-y-auto pr-1 custom-scrollbar">
                       {topCandidates.map((cand, idx) => (
-                        <div key={cand.id} className="flex items-center justify-between p-4 border border-slate-100 rounded-2xl bg-white hover:border-[#007A33] transition-colors group">
-                          <div className="flex items-center gap-4">
-                            <div className="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center font-bold text-slate-400">
+                        <div key={cand.id} className="flex items-center justify-between p-2.5 border border-slate-100 rounded-xl bg-white hover:border-[#007A33] transition-colors group">
+                          <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center font-bold text-slate-400 text-xs shrink-0">
                               #{idx + 1}
                             </div>
-                            <img src={cand.avatar} alt="avatar" className="w-12 h-12 rounded-full border-2 border-white shadow-sm" />
+                            <img src={cand.avatar} alt="avatar" className="w-9 h-9 rounded-full border border-slate-100 shadow-sm shrink-0" />
                             <div>
-                              <h4 className="font-bold text-slate-800 group-hover:text-[#007A33] transition-colors">{cand.name}</h4>
-                              <p className="text-xs text-slate-500">{cand.role} · {cand.department}</p>
+                              <h4 className="font-bold text-xs text-slate-800 group-hover:text-[#007A33] transition-colors">{cand.name}</h4>
+                              <p className="text-[10px] text-slate-500">{cand.role} · {cand.department}</p>
                             </div>
                           </div>
                           <div className="text-right">
                             <span className={clsx(
-                              "text-xl font-bold",
+                              "text-sm font-black",
                               cand.match >= 70 ? "text-[#007A33]" : "text-amber-500"
                             )}>
                               {cand.match}%
                             </span>
-                            <span className="block text-xs text-slate-400 font-medium">Afinidad</span>
+                            <span className="block text-[8px] text-slate-400 font-bold">Afinidad</span>
                           </div>
                         </div>
                       ))}
                     </div>
-                  </>
+                  </div>
                 )}
               </div>
             </div>
