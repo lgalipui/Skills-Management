@@ -263,6 +263,30 @@ export const mockRoles = [
     ]
   },
   { 
+    id: "r6", 
+    title: "Analista Programador", 
+    level: "Senior", 
+    family: "Ingeniería de Software",
+    description: "Desarrollador experimentado capaz de diseñar soluciones medianas y dar soporte a perfiles junior.",
+    requiredSkills: [
+      { name: "React", level: 4, priority: "Crítica" },
+      { name: "Node.js", level: 3, priority: "Primaria" },
+      { name: "SQL", level: 3, priority: "Secundaria" }
+    ]
+  },
+  { 
+    id: "r7", 
+    title: "Analista Programador", 
+    level: "Lead", 
+    family: "Ingeniería de Software",
+    description: "Líder técnico de desarrollo enfocado en calidad de código y diseño de componentes robustos.",
+    requiredSkills: [
+      { name: "React", level: 5, priority: "Crítica" },
+      { name: "Node.js", level: 4, priority: "Crítica" },
+      { name: "Liderazgo", level: 3, priority: "Primaria" }
+    ]
+  },
+  { 
     id: "r2", 
     title: "Senior Developer", 
     level: "Senior", 
@@ -399,10 +423,13 @@ export const generateMockSkills = (count = 5000) => {
     else if (["Comunicación", "Liderazgo"].includes(name)) family = "Habilidades Blandas";
     else if (["Gestión de Talento"].includes(name)) family = "Negocio";
     
+    const isGlobalSoftSkill = family === "Habilidades Blandas" && (name === "Comunicación" || name === "Liderazgo");
+
     return {
       id: `s-${index + 1}`,
       name: name,
       family: family,
+      isGlobalSoftSkill: isGlobalSoftSkill,
       description: mockSkillDetails[name].description,
       levels: mockSkillDetails[name].levels
     };
@@ -561,6 +588,7 @@ export const generateMockSkills = (count = 5000) => {
       id: `s-${list.length + 1}`,
       name: eb.name,
       family: eb.family,
+      isGlobalSoftSkill: false,
       description: eb.description,
       levels: eb.levels
     });
@@ -635,6 +663,7 @@ export const generateMockSkills = (count = 5000) => {
       id: `s-${baseIdCount++}`,
       name: name,
       family: family,
+      isGlobalSoftSkill: false,
       description: description,
       levels: {
         1: `Nivel Conceptual: Comprende los principios teóricos básicos relativos a "${name}" y apoya en tareas estructuradas.`,

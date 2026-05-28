@@ -12,7 +12,7 @@ export const MainLayout = ({ children }) => {
         <div className="absolute bottom-0 left-0 w-96 h-96 bg-blue-500 opacity-[0.02] rounded-full blur-3xl pointer-events-none transform -translate-x-1/3 translate-y-1/3"></div>
         
         <Header />
-        <main className="flex-1 p-8 overflow-y-auto z-0 relative">
+        <main className="flex-1 p-8 overflow-y-auto relative">
           <div className="max-w-7xl mx-auto">
             {children}
           </div>

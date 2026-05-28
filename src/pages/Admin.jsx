@@ -9,8 +9,28 @@ import { mockRoles, mockOpportunities, mockCourses, mockSkills } from '../data/m
 import clsx from 'clsx';
 
 export const Admin = () => {
-  const { currentUser, rolesData, setRolesData, levels, setLevels, roleFamilies, setRoleFamilies } = useAuth();
+  const { 
+    currentUser, rolesData, setRolesData, levels, setLevels, roleFamilies, setRoleFamilies,
+    reviewConfigs, saveReviewConfig, deleteReviewConfig
+  } = useAuth();
   const [activeTab, setActiveTab] = useState('Familias');
+
+  // --- ESTADO PARA CONFIGURACIONES 360 ---
+  const [isConfigModalOpen, setIsConfigModalOpen] = useState(false);
+  const [editingConfig, setEditingConfig] = useState(null);
+  const [configForm, setConfigForm] = useState({
+    name: '',
+    workflowType: 'self_manager_peers',
+    minPeers: 2,
+    maxPeers: 4,
+    managerWeight: 70,
+    peerWeight: 30,
+    targeting: {
+      roleFamily: 'Todas',
+      skillFamily: 'Todas',
+      skillCategory: 'Todas'
+    }
+  });
 
   // Estado local para simular CRUD en memoria
   const [opportunitiesData, setOpportunitiesData] = useState(mockOpportunities);
@@ -45,7 +65,7 @@ export const Admin = () => {
   // --- ESTADO PARA FAMILIAS (MAESTRO TABULADO) ---
   const [families, setFamilies] = useState([
     { id: 'FAM-1', name: 'Tecnología', color: 'emerald', description: 'Competencias técnicas asociadas al desarrollo de software, arquitectura cloud, ciberseguridad e infraestructura.' },
-    { id: 'FAM-2', name: 'Habilidades Blandas', color: 'indigo', description: 'Competencias interpersonales, comunicación, liderazgo, negociación y trabajo en equipo.' },
+    { id: 'FAM-2', name: 'Habilidades Blandas', color: 'indigo', description: 'Competencias interpersonales, comunicación, liderazgo, negociación y trabajo en equipo.', isGlobalSoftSkill: true },
     { id: 'FAM-3', name: 'Metodología', color: 'blue', description: 'Marcos de trabajo ágiles, Scrum, Kanban, Design Thinking y metodologías de entrega de valor.' },
     { id: 'FAM-4', name: 'Negocio', color: 'amber', description: 'Conocimiento financiero, análisis de riesgos, banca minorista y desarrollo comercial.' },
     { id: 'FAM-5', name: 'Legal y Cumplimiento', color: 'rose', description: 'Prevención de blanqueo de capitales, protección de datos (RGPD) y cumplimiento normativo.' }
@@ -55,7 +75,8 @@ export const Admin = () => {
   const [familyForm, setFamilyForm] = useState({
     name: '',
     color: 'emerald',
-    description: ''
+    description: '',
+    isGlobalSoftSkill: false
   });
 
   // --- ESTADO PARA NIVELES (MAESTRO DINÁMICO) ---
@@ -263,7 +284,8 @@ export const Admin = () => {
     setFamilyForm({
       name: '',
       color: 'emerald',
-      description: ''
+      description: '',
+      isGlobalSoftSkill: false
     });
     setIsFamilyModalOpen(true);
   };
@@ -274,7 +296,8 @@ export const Admin = () => {
     setFamilyForm({
       name: family.name,
       color: family.color,
-      description: family.description
+      description: family.description,
+      isGlobalSoftSkill: !!family.isGlobalSoftSkill
     });
     setIsFamilyModalOpen(true);
   };
@@ -465,6 +488,69 @@ export const Admin = () => {
     }
   };
 
+  // --- CRUD HANDLERS PARA CONFIGURACIÓN 360 ---
+  const handleOpenAddConfig = () => {
+    setEditingConfig(null);
+    setConfigForm({
+      name: '',
+      workflowType: 'self_manager_peers',
+      minPeers: 2,
+      maxPeers: 4,
+      managerWeight: 70,
+      peerWeight: 30,
+      targeting: {
+        roleFamily: 'Todas',
+        skillFamily: 'Todas',
+        skillCategory: 'Todas'
+      }
+    });
+    setIsConfigModalOpen(true);
+  };
+
+  const handleOpenEditConfig = (config, e) => {
+    e.stopPropagation();
+    setEditingConfig(config);
+    setConfigForm({
+      name: config.name,
+      workflowType: config.workflowType,
+      minPeers: config.minPeers || 2,
+      maxPeers: config.maxPeers || 4,
+      managerWeight: config.managerWeight !== undefined ? config.managerWeight : 70,
+      peerWeight: config.peerWeight !== undefined ? config.peerWeight : 30,
+      targeting: { ...config.targeting }
+    });
+    setIsConfigModalOpen(true);
+  };
+
+  const handleDeleteConfig = (configId, e) => {
+    e.stopPropagation();
+    if (confirm('¿Estás seguro de que deseas eliminar esta regla de evaluación 360?')) {
+      deleteReviewConfig(configId);
+      alert('Regla de evaluación eliminada.');
+    }
+  };
+
+  const handleSaveConfig = (e) => {
+    e.preventDefault();
+    if (!configForm.name) {
+      alert('Por favor, indica un nombre para la campaña.');
+      return;
+    }
+    if (configForm.workflowType === 'self_manager_peers') {
+      const sum = Number(configForm.managerWeight) + Number(configForm.peerWeight);
+      if (sum !== 100) {
+        alert(`La suma de las ponderaciones del Mánager y Colegas debe ser exactamente 100%. Actualmente suma ${sum}%.`);
+        return;
+      }
+    }
+    saveReviewConfig({
+      id: editingConfig ? editingConfig.id : undefined,
+      ...configForm
+    });
+    setIsConfigModalOpen(false);
+    alert(editingConfig ? 'Regla actualizada con éxito.' : 'Nueva regla de evaluación 360 guardada con éxito.');
+  };
+
   // CRUD Handlers para Roles (Maestro Dinámico)
   const handleOpenAddRole = () => {
     setEditingRole(null);
@@ -570,19 +656,62 @@ export const Admin = () => {
       return;
     }
 
-    setRolesData(prev => prev.map(r => {
-      if (r.id === perfilForm.roleId) {
-        return {
-          ...r,
+    const selectedBaseRole = rolesData.find(r => r.id === perfilForm.roleId);
+    if (!selectedBaseRole) return;
+
+    if (editingPerfilRole) {
+      // Si estamos editando un perfil existente, actualizamos directamente esa fila concreta
+      setRolesData(prev => prev.map(r => {
+        if (r.id === editingPerfilRole.id) {
+          return {
+            ...r,
+            level: perfilForm.level,
+            requiredSkills: perfilForm.requiredSkills
+          };
+        }
+        return r;
+      }));
+      alert(`Perfil de éxito para "${editingPerfilRole.title}" a nivel "${perfilForm.level}" guardado con éxito.`);
+    } else {
+      // Si es un nuevo registro, comprobamos si ya existe esa combinación de título y nivel
+      const existingIdx = rolesData.findIndex(r => 
+        r.title.toLowerCase() === selectedBaseRole.title.toLowerCase() && 
+        r.level.toLowerCase() === perfilForm.level.toLowerCase()
+      );
+
+      if (existingIdx >= 0) {
+        // Si ya existe la combinación, actualizamos sus habilidades requeridas
+        setRolesData(prev => prev.map((r, idx) => {
+          if (idx === existingIdx) {
+            return {
+              ...r,
+              requiredSkills: perfilForm.requiredSkills
+            };
+          }
+          return r;
+        }));
+        alert(`La combinación de "${selectedBaseRole.title}" a nivel "${perfilForm.level}" ya existía y ha sido actualizada con las nuevas habilidades.`);
+      } else {
+        // Si no existe, creamos un nuevo registro en el catálogo (Opción A)
+        const nextIdNum = rolesData.reduce((max, r) => {
+          const num = parseInt(r.id.replace(/\D/g, ''), 10);
+          return isNaN(num) ? max : Math.max(max, num);
+        }, 5) + 1;
+
+        const newPerfil = {
+          id: `r${nextIdNum}`,
+          title: selectedBaseRole.title,
+          family: selectedBaseRole.family,
+          description: selectedBaseRole.description || `Perfil de éxito para el rol ${selectedBaseRole.title} a nivel ${perfilForm.level}.`,
           level: perfilForm.level,
           requiredSkills: perfilForm.requiredSkills
         };
-      }
-      return r;
-    }));
 
-    const roleObj = rolesData.find(r => r.id === perfilForm.roleId);
-    alert(`Perfil de éxito para el rol "${roleObj ? roleObj.title : perfilForm.roleId}" guardado con éxito.`);
+        setRolesData(prev => [...prev, newPerfil]);
+        alert(`Nuevo Perfil de Éxito creado con éxito: "${newPerfil.title}" a nivel "${newPerfil.level}".`);
+      }
+    }
+
     setIsPerfilModalOpen(false);
   };
 
@@ -1101,8 +1230,15 @@ export const Admin = () => {
                       
                       {/* Nombre y Familia */}
                       <td className="py-1.5 px-3">
-                        <div className="font-bold text-slate-800 group-hover:text-[#007A33] transition-colors leading-tight">
-                          {skill.name}
+                        <div className="flex items-center gap-1.5 flex-wrap">
+                          <span className="font-bold text-slate-800 group-hover:text-[#007A33] transition-colors leading-tight">
+                            {skill.name}
+                          </span>
+                          {(skill.isGlobalSoftSkill || families.find(f => f.name === skill.family)?.isGlobalSoftSkill) && (
+                            <span className="bg-purple-100 text-purple-750 border border-purple-200 px-1.5 py-0.2 rounded text-[9px] font-extrabold tracking-wider uppercase">
+                              Global
+                            </span>
+                          )}
                         </div>
                         <div className="mt-1">{getFamilyBadge(skill.family)}</div>
                       </td>
@@ -1796,7 +1932,8 @@ export const Admin = () => {
                   <th className="py-2 pl-4 w-24">ID</th>
                   <th className="py-2 px-3 w-60">Familia de Skills</th>
                   <th className="py-2 px-3">Descripción de la Familia de Skills</th>
-                  <th className="py-2 px-3 w-44 text-center">Skills Asociadas</th>
+                  <th className="py-2 px-3 w-36 text-center">Global?</th>
+                  <th className="py-2 px-3 w-36 text-center">Skills Asociadas</th>
                   <th className="py-2 text-center pr-4 w-32">Acciones</th>
                 </tr>
               </thead>
@@ -1813,6 +1950,15 @@ export const Admin = () => {
                       </td>
                       <td className="py-1.5 px-3 text-slate-600 text-xs leading-relaxed">
                         {fam.description}
+                      </td>
+                      <td className="py-1.5 px-3 text-center">
+                        {fam.isGlobalSoftSkill ? (
+                          <span className="bg-purple-100 text-purple-750 border border-purple-200 px-2 py-0.5 rounded text-[10px] font-extrabold uppercase shadow-2xs">
+                            Global
+                          </span>
+                        ) : (
+                          <span className="text-slate-350 text-xs italic">-</span>
+                        )}
                       </td>
                       <td className="py-1.5 px-3 text-center">
                         <span className="bg-emerald-50 text-[#007A33] border border-emerald-100 text-xs font-mono font-bold px-2 py-0.5 rounded-md">
@@ -2003,6 +2149,11 @@ export const Admin = () => {
               <div className="space-y-2">
                 <div className="flex items-center gap-2">
                   {getFamilyBadge(selectedSkill.family)}
+                  {(selectedSkill.isGlobalSoftSkill || families.find(f => f.name === selectedSkill.family)?.isGlobalSoftSkill) && (
+                    <span className="bg-purple-100 text-purple-750 border border-purple-200 px-2 py-0.5 rounded text-[10px] font-extrabold tracking-wider uppercase shadow-sm">
+                      Habilidad Global
+                    </span>
+                  )}
                 </div>
                 <h2 className="text-2xl font-bold text-slate-800 leading-tight">
                   {selectedSkill.name}
@@ -2137,7 +2288,6 @@ export const Admin = () => {
                   ))}
                 </select>
               </div>
-
               {/* Descripción */}
               <div className="space-y-1.5">
                 <label className="text-xs font-bold text-slate-500 uppercase tracking-wider block">
@@ -2303,6 +2453,20 @@ export const Admin = () => {
                 />
               </div>
 
+              {/* Checkbox Global */}
+              <div className="flex items-center gap-2 p-3 bg-purple-50/50 border border-purple-100 rounded-xl">
+                <input
+                  type="checkbox"
+                  id="isGlobalSoftSkillFamily"
+                  checked={!!familyForm.isGlobalSoftSkill}
+                  onChange={(e) => setFamilyForm(prev => ({ ...prev, isGlobalSoftSkill: e.target.checked }))}
+                  className="w-4 h-4 text-purple-650 border-slate-350 rounded focus:ring-purple-500 accent-purple-650 cursor-pointer"
+                />
+                <label htmlFor="isGlobalSoftSkillFamily" className="text-xs font-bold text-purple-950 cursor-pointer select-none">
+                  ¿Es Global? (Se evalúa transversalmente en toda la entidad)
+                </label>
+              </div>
+
             </div>
 
             {/* Footer */}
@@ -2324,6 +2488,7 @@ export const Admin = () => {
           </form>
         </div>
       )}
+
 
       {/* MODAL CRUD: AÑADIR / EDITAR NIVEL */}
       {isLevelModalOpen && (
@@ -2677,9 +2842,13 @@ export const Admin = () => {
                       className="w-full px-4 py-2.5 border-2 border-slate-100 bg-white rounded-xl text-sm focus:border-[#007A33] focus:outline-none transition-colors cursor-pointer"
                     >
                       <option value="" disabled>Seleccione un rol...</option>
-                      {rolesData.map(r => (
-                        <option key={r.id} value={r.id}>{r.title} ({r.family})</option>
-                      ))}
+                      {/* Filtramos por nombres únicos para simplificar la selección del rol genérico en el catálogo de perfiles */}
+                      {Array.from(new Set(rolesData.map(r => r.title))).map(title => {
+                        const r = rolesData.find(x => x.title === title);
+                        return (
+                          <option key={r.id} value={r.id}>{r.title} ({r.family})</option>
+                        );
+                      })}
                     </select>
                   )}
                 </div>

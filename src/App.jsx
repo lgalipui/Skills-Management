@@ -5,6 +5,7 @@ import { MainLayout } from './components/Layout/MainLayout';
 import { Dashboard } from './pages/Dashboard';
 import { MySkills } from './pages/MySkills';
 import { SkillsReview } from './pages/SkillsReview';
+import { PeerNomination } from './pages/PeerNomination';
 import { MyUpskilling } from './pages/MyUpskilling';
 import { MyBadges } from './pages/MyBadges';
 import { MyNewRoles } from './pages/MyNewRoles';
@@ -15,6 +16,10 @@ import { WorkforceManagement } from './pages/WorkforceManagement';
 import { HrDashboard } from './pages/HrDashboard';
 import { OtherSkills } from './pages/OtherSkills';
 import { Placeholder } from './pages/Placeholder';
+import { SkillsReviewConfig } from './pages/SkillsReviewConfig';
+import { CareerPaths } from './pages/CareerPaths';
+import { HrCareerManagement } from './pages/HrCareerManagement';
+import { HrCalibration } from './pages/HrCalibration';
 
 function App() {
   return (
@@ -24,6 +29,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/myskills" element={<MySkills />} />
+            <Route path="/peer-nomination" element={<PeerNomination />} />
             <Route path="/skills-review" element={<SkillsReview />} />
             <Route path="/myupskilling" element={<MyUpskilling />} />
             <Route path="/mybadges" element={<MyBadges />} />
@@ -33,7 +39,11 @@ function App() {
             <Route path="/workforce" element={<WorkforceManagement />} />
             <Route path="/hr-dashboard" element={<HrDashboard />} />
             <Route path="/otherskills" element={<OtherSkills />} />
+            <Route path="/career-paths" element={<CareerPaths />} />
+            <Route path="/hr-careers" element={<HrCareerManagement />} />
+            <Route path="/hr-calibration" element={<HrCalibration />} />
             <Route path="/admin" element={<Admin />} />
+            <Route path="/config-360" element={<SkillsReviewConfig />} />
           </Routes>
         </MainLayout>
       </BrowserRouter>

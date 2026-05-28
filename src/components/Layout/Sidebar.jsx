@@ -12,7 +12,12 @@ import {
   Search, 
   Settings,
   BarChart3,
-  Sparkles
+  Sparkles,
+  SlidersHorizontal,
+  UserCheck,
+  GitFork,
+  Map,
+  Scale
 } from 'lucide-react';
 import clsx from 'clsx';
 
@@ -24,14 +29,19 @@ export const Sidebar = () => {
   const navItems = [
     { path: '/', label: 'Dashboard', icon: LayoutDashboard, roles: ['Employee', 'Manager', 'RRHH'] },
     { path: '/myskills', label: 'MySkills', icon: User, roles: ['Employee', 'Manager', 'RRHH'] },
-    { path: '/skills-review', label: 'Skills Review', icon: Users, roles: ['Employee', 'Manager', 'RRHH'] },
     { path: '/myupskilling', label: 'MyUpskilling', icon: GraduationCap, roles: ['Employee', 'Manager', 'RRHH'] },
     { path: '/mybadges', label: 'MyBadges', icon: Award, roles: ['Employee', 'Manager', 'RRHH'] },
     { path: '/mynewroles', label: 'MyNewRoles', icon: TrendingUp, roles: ['Employee', 'Manager', 'RRHH'] },
     { path: '/myopportunities', label: 'MyOpportunities', icon: Briefcase, roles: ['Employee', 'Manager', 'RRHH'] },
+    { path: '/peer-nomination', label: 'Nominación de Peers', icon: UserCheck, roles: ['Employee', 'Manager', 'RRHH'] },
+    { path: '/skills-review', label: 'Skills Review', icon: Users, roles: ['Employee', 'Manager', 'RRHH'] },
+    { path: '/career-paths', label: 'My Itineraries', icon: Map, roles: ['Employee', 'Manager', 'RRHH'] },
     { path: '/otherskills', label: 'Other Skills', icon: Sparkles, roles: ['Employee', 'Manager', 'RRHH'] },
-    { path: '/hr-dashboard', label: 'Dashboard RRHH', icon: BarChart3, roles: ['RRHH'] },
     { path: '/talentscout', label: 'Internal Talent Scout', icon: Search, roles: ['RRHH'] },
+    { path: '/hr-dashboard', label: 'Dashboard RRHH', icon: BarChart3, roles: ['RRHH'] },
+    { path: '/config-360', label: 'Configuración Skill Review', icon: SlidersHorizontal, roles: ['RRHH'] },
+    { path: '/hr-calibration', label: 'Panel de Calibración', icon: Scale, roles: ['RRHH'] },
+    { path: '/hr-careers', label: 'Gestión de Carreras', icon: GitFork, roles: ['RRHH'] },
     { path: '/workforce', label: 'Gestión de Plantilla', icon: Users, roles: ['RRHH'] },
     { path: '/admin', label: 'Gestión Maestros', icon: Settings, roles: ['RRHH'] },
   ];
@@ -45,7 +55,7 @@ export const Sidebar = () => {
           <Award className="text-[#007A33]" size={18} />
         </div>
         <h1 className="text-xl font-bold tracking-tight">
-          Cajamar<span className="font-light opacity-80">Skills</span>
+          Talent<span className="font-light opacity-80">by Skills</span>
         </h1>
       </div>
       <nav className="flex-1 px-3 py-3 space-y-0.5 overflow-y-auto">
