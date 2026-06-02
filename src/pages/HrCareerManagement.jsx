@@ -53,6 +53,9 @@ export const HrCareerManagement = () => {
   // Modal de niveles del Rol Base
   const [isBaseRoleLevelsModalOpen, setIsBaseRoleLevelsModalOpen] = useState(false);
 
+  // Estado para colapsar/expandir la leyenda flotante del lienzo
+  const [isLegendOpen, setIsLegendOpen] = useState(false);
+
   // Zoom y Paneado del Canvas
   const [zoomScale, setZoomScale] = useState(1.0);
   const [panOffset, setPanOffset] = useState({ x: 0, y: 0 });
@@ -1096,12 +1099,38 @@ export const HrCareerManagement = () => {
               </div>
 
               {/* LEYENDA DEL LIENZO FLOTANTE */}
-              <div className="absolute top-4 left-4 z-30 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xs border border-slate-200 dark:border-slate-800 p-3 rounded-2xl shadow-md text-left text-[10px] space-y-1.5 max-w-[200px] pointer-events-auto">
-                <p className="font-bold text-slate-800 dark:text-slate-200 border-b border-slate-100 dark:border-slate-800 pb-1 flex items-center gap-1"><Info size={11} className="text-blue-600 dark:text-blue-400" /> Distribución Relativa</p>
-                <p className="text-slate-500 dark:text-slate-400 leading-normal">✓ <strong>Rol Base</strong>: Fijo abajo a la izquierda.</p>
-                <p className="text-slate-500 dark:text-slate-400 leading-normal">✓ <strong>Vertical</strong>: Arriba del rol base.</p>
-                <p className="text-slate-500 dark:text-slate-400 leading-normal">✓ <strong>Lateral</strong>: A la derecha al lado.</p>
-                <p className="text-slate-500 dark:text-slate-400 leading-normal">✓ <strong>Diagonal</strong>: En diagonal arriba-derecha.</p>
+              <div className="absolute top-4 left-4 z-30 pointer-events-auto">
+                {!isLegendOpen ? (
+                  <button
+                    onClick={() => setIsLegendOpen(true)}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xs text-[10px] font-black text-slate-650 dark:text-slate-350 hover:text-blue-600 dark:hover:text-blue-450 hover:border-blue-500 shadow-md cursor-pointer transition-all active:scale-95"
+                    title="Mostrar leyenda de distribución"
+                  >
+                    <Info size={12} className="text-blue-600 dark:text-blue-400" />
+                    <span>Leyenda</span>
+                  </button>
+                ) : (
+                  <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border border-slate-250 dark:border-slate-850 p-3.5 rounded-2xl shadow-xl text-left text-[10px] space-y-2 max-w-[210px] animate-in fade-in zoom-in-95 duration-200">
+                    <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-1.5">
+                      <span className="font-black text-slate-850 dark:text-slate-200 flex items-center gap-1">
+                        <Info size={11} className="text-blue-600 dark:text-blue-400" /> Distribución Relativa
+                      </span>
+                      <button
+                        onClick={() => setIsLegendOpen(false)}
+                        className="p-0.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-md cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                        title="Ocultar leyenda"
+                      >
+                        <X size={12} />
+                      </button>
+                    </div>
+                    <div className="space-y-1.5">
+                      <p className="text-slate-500 dark:text-slate-450 leading-normal">✓ <strong>Rol Base</strong>: Fijo abajo a la izquierda.</p>
+                      <p className="text-slate-500 dark:text-slate-450 leading-normal">✓ <strong>Vertical</strong>: Arriba del rol base.</p>
+                      <p className="text-slate-500 dark:text-slate-450 leading-normal">✓ <strong>Lateral</strong>: A la derecha al lado.</p>
+                      <p className="text-slate-500 dark:text-slate-450 leading-normal">✓ <strong>Diagonal</strong>: En diagonal arriba-derecha.</p>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* PANEL DE CONTROL DE ZOOM FLOTANTE */}
