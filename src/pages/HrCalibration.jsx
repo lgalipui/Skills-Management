@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { mockSkillDetails } from '../data/mockData';
+import { HrCalibrationDashboard } from '../components/HrCalibration/HrCalibrationDashboard';
 import { 
   Scale, Users, Award, AlertCircle, Sparkles, X, Check, Eye, HelpCircle, 
   Info, BarChart3, ChevronRight, FileSignature, ArrowRight
@@ -25,6 +26,9 @@ export const HrCalibration = () => {
     roleFamilies = [],
     getWorkflowForSkill
   } = useAuth();
+
+  // --- TABS DEL PANEL ---
+  const [activePanelTab, setActivePanelTab] = useState('calibration'); // 'calibration' or 'dashboard'
 
   // --- FILTROS ---
   const [selectedCampaignId, setSelectedCampaignId] = useState(() => {
@@ -400,7 +404,35 @@ export const HrCalibration = () => {
         </div>
       </div>
 
-      {/* FILTROS MULTIDIMENSIONALES */}
+      {/* TABS DE SELECCIÓN DE VISTA */}
+      <div className="flex border-b border-slate-200 dark:border-slate-800/60 gap-6">
+        <button
+          onClick={() => setActivePanelTab('calibration')}
+          className={clsx(
+            "pb-3 text-sm font-black transition-all border-b-2 px-1 flex items-center gap-2 cursor-pointer",
+            activePanelTab === 'calibration'
+              ? "border-[#007A33] text-[#007A33] dark:text-emerald-400"
+              : "border-transparent text-slate-400 dark:text-slate-500 hover:text-slate-650 dark:hover:text-slate-300"
+          )}
+        >
+          <Scale size={16} /> Calibración
+        </button>
+        <button
+          onClick={() => setActivePanelTab('dashboard')}
+          className={clsx(
+            "pb-3 text-sm font-black transition-all border-b-2 px-1 flex items-center gap-2 cursor-pointer",
+            activePanelTab === 'dashboard'
+              ? "border-[#007A33] text-[#007A33] dark:text-emerald-400"
+              : "border-transparent text-slate-400 dark:text-slate-500 hover:text-slate-650 dark:hover:text-slate-300"
+          )}
+        >
+          <BarChart3 size={16} /> Dashboard calibración
+        </button>
+      </div>
+
+      {activePanelTab === 'calibration' ? (
+        <>
+          {/* FILTROS MULTIDIMENSIONALES */}
       <div className="bg-white p-5 rounded-3xl border border-slate-200 shadow-3xs grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Selector Unidad Organizativa */}
         <div className="space-y-1.5">
@@ -758,6 +790,15 @@ export const HrCalibration = () => {
           )}
         </div>
       </div>
+
+        </>
+      ) : (
+        <HrCalibrationDashboard 
+          filteredEmployees={filteredEmployees} 
+          calibratedUsersData={calibratedUsersData} 
+          handleOpenCalibration={handleOpenCalibration} 
+        />
+      )}
 
       {/* ========================================================================= */}
       {/* MODAL 1: CALIBRACIÓN INTERACTIVA (EDICIÓN) */}

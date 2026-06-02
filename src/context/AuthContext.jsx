@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import { mockUsers as initialUsers, mockBadgesCatalog as initialBadges, mockRoles } from '../data/mockData';
 
 const AuthContext = createContext();
@@ -133,6 +133,27 @@ const initialPeerReviews = [
 ];
 
 export const AuthProvider = ({ children }) => {
+  const [darkMode, setDarkMode] = useState(() => {
+    const saved = localStorage.getItem('darkMode');
+    return saved ? saved === 'true' : true;
+  });
+
+  const toggleDarkMode = () => {
+    setDarkMode(prev => {
+      const next = !prev;
+      localStorage.setItem('darkMode', String(next));
+      return next;
+    });
+  };
+
+  useEffect(() => {
+    if (darkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [darkMode]);
+
   const [users, setUsers] = useState(() => mapInitialUsers(initialUsers));
   const [badgesCatalog, setBadgesCatalog] = useState(initialBadges);
   
@@ -672,6 +693,8 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider value={{ 
+      darkMode,
+      toggleDarkMode,
       currentUser, 
       switchUser, 
       users, 

@@ -613,7 +613,7 @@ export const HrCareerManagement = () => {
   }, [selectedDestRoleId, criteriaForm, employeeDossier]);
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-300 max-w-7xl mx-auto p-1 bg-[#FAFBFC]">
+    <div className="space-y-6 animate-in fade-in duration-300 max-w-7xl mx-auto p-1 bg-transparent">
       
       {/* CABECERA GIGANTE PREMIUM */}
       <div className="bg-white rounded-3xl p-6 md:p-8 shadow-xs border border-slate-100/80 relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-6">
@@ -840,7 +840,7 @@ export const HrCareerManagement = () => {
 
             {/* CONTENEDOR DE LIENZO EDITABLE COMPLETO */}
             <div 
-              className="relative w-full h-[580px] overflow-hidden bg-[#FAFBFC] rounded-3xl border border-slate-200 shadow-inner select-none cursor-grab active:cursor-grabbing"
+              className="relative w-full h-[580px] overflow-hidden bg-slate-50/20 dark:bg-slate-950/25 rounded-3xl border border-slate-200 shadow-inner select-none cursor-grab active:cursor-grabbing"
               onPointerDown={handleBgPointerDown}
               onPointerMove={handleBgPointerMove}
               onPointerUp={handleBgPointerUp}
@@ -955,11 +955,11 @@ export const HrCareerManagement = () => {
                   const midX = (c.x1 + c.x2) / 2;
                   const midY = (c.y1 + c.y2) / 2;
 
-                  let pillBg = 'bg-slate-200 text-slate-700 border-slate-350';
+                  let pillBg = 'bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border-slate-350 dark:border-slate-700';
                   if (c.type === 'vertical') {
-                    pillBg = 'bg-blue-50 text-blue-800 border-blue-200';
+                    pillBg = 'bg-blue-50 dark:bg-blue-950/80 text-blue-800 dark:text-blue-300 border-blue-200 dark:border-blue-800';
                   } else if (c.type === 'diagonal') {
-                    pillBg = 'bg-indigo-50 text-indigo-850 border-indigo-200';
+                    pillBg = 'bg-indigo-50 dark:bg-indigo-950/80 text-indigo-850 dark:text-indigo-300 border-indigo-200 dark:border-indigo-800';
                   }
 
                   const isHovered = hoveredTransition?.toId === c.toId;
@@ -995,12 +995,12 @@ export const HrCareerManagement = () => {
                     <div
                       onPointerDown={(e) => e.stopPropagation()}
                       onClick={() => setIsBaseRoleLevelsModalOpen(true)}
-                      className="role-card absolute w-[220px] h-[90px] -translate-x-1/2 -translate-y-1/2 p-3 rounded-2xl border border-emerald-300 shadow-md ring-2 ring-emerald-100 bg-emerald-50/95 text-left select-none z-30 cursor-pointer hover:scale-102 hover:shadow-lg transition-all"
+                      className="role-card absolute w-[220px] h-[90px] -translate-x-1/2 -translate-y-1/2 p-3 rounded-2xl border border-emerald-300 dark:border-emerald-500/80 shadow-md ring-2 ring-emerald-100 dark:ring-emerald-900/30 bg-emerald-50/95 dark:bg-emerald-950/40 dark:backdrop-blur-md text-left select-none z-30 cursor-pointer hover:scale-102 hover:shadow-lg transition-all"
                       style={{ left: `${pos.x}px`, top: `${pos.y}px` }}
                       title="Haz clic para explorar los niveles, habilidades y criterios requeridos de este rol"
                     >
                       <div className="flex justify-between items-start min-w-0">
-                        <h4 className="font-extrabold text-[11px] leading-tight line-clamp-2 pr-2 text-emerald-950">
+                        <h4 className="font-extrabold text-[11px] leading-tight line-clamp-2 pr-2 text-emerald-950 dark:text-emerald-350">
                           {selectedBaseRole.title}
                         </h4>
                         <span className="text-[8px] font-extrabold px-1.5 py-0.2 bg-[#007A33] text-white border border-emerald-600 rounded uppercase tracking-wider scale-90 shrink-0">
@@ -1008,19 +1008,19 @@ export const HrCareerManagement = () => {
                         </span>
                       </div>
                       
-                      <div className="flex flex-wrap gap-1 mt-1 border-t border-emerald-100 pt-1">
+                      <div className="flex flex-wrap gap-1 mt-1 border-t border-emerald-100 dark:border-emerald-900/30 pt-1">
                         {baseRoleLevels.map(lvl => (
-                          <span key={lvl.id} className="text-[7px] font-black px-1 py-0.2 bg-emerald-100/80 border border-emerald-250 text-emerald-800 rounded uppercase tracking-wider scale-90 origin-left shrink-0">
+                          <span key={lvl.id} className="text-[7px] font-black px-1 py-0.2 bg-emerald-100/80 dark:bg-emerald-900/40 border border-emerald-250 dark:border-emerald-700/50 text-emerald-800 dark:text-emerald-300 rounded uppercase tracking-wider scale-90 origin-left shrink-0">
                             {lvl.level}
                           </span>
                         ))}
                       </div>
 
                       <div className="flex justify-between items-center mt-1">
-                        <span className="text-[9px] font-bold text-emerald-700 bg-emerald-100/50 border border-emerald-200 px-1.5 py-0.2 rounded-md">
+                        <span className="text-[9px] font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-100/50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800/40 px-1.5 py-0.2 rounded-md">
                           {selectedBaseRole.family.split(' ')[0]}
                         </span>
-                        <span className="text-[8px] font-extrabold text-emerald-600 font-mono animate-pulse">
+                        <span className="text-[8px] font-extrabold text-emerald-600 dark:text-emerald-450 font-mono animate-pulse">
                           EXPLORAR ➔
                         </span>
                       </div>
@@ -1036,13 +1036,13 @@ export const HrCareerManagement = () => {
                   const pos = getRolePosition(conn.toId);
                   const isDragging = dragState?.roleId === conn.toId;
 
-                  let borderStyle = "border-slate-200 bg-white";
+                  let borderStyle = "border-slate-200 bg-white dark:border-slate-750 dark:bg-slate-900/40 dark:backdrop-blur-md";
                   if (conn.type === 'vertical') {
-                    borderStyle = "border-blue-300 bg-blue-50/30";
+                    borderStyle = "border-blue-300 bg-blue-50/30 dark:border-blue-500/80 dark:bg-blue-950/40 dark:backdrop-blur-md";
                   } else if (conn.type === 'diagonal') {
-                    borderStyle = "border-indigo-300 bg-indigo-50/30";
+                    borderStyle = "border-indigo-300 bg-indigo-50/30 dark:border-indigo-500/80 dark:bg-indigo-950/40 dark:backdrop-blur-md";
                   } else {
-                    borderStyle = "border-slate-350 bg-slate-50";
+                    borderStyle = "border-slate-350 bg-slate-50 dark:border-slate-750 dark:bg-slate-900/40 dark:backdrop-blur-md";
                   }
 
                   return (
@@ -1050,7 +1050,7 @@ export const HrCareerManagement = () => {
                       key={`card-${conn.toId}`}
                       className={clsx(
                         "absolute w-[220px] h-[78px] -translate-x-1/2 -translate-y-1/2 p-3 rounded-2xl border transition-shadow shadow-xs flex flex-col justify-between cursor-move text-left select-none group/node z-20",
-                        isDragging ? "border-blue-500 shadow-lg scale-102 bg-blue-50/90" : borderStyle
+                        isDragging ? "border-blue-500 shadow-lg scale-102 bg-blue-50/90 dark:bg-blue-950/80" : borderStyle
                       )}
                       style={{ left: `${pos.x}px`, top: `${pos.y}px` }}
                       onPointerDown={(e) => handleNodePointerDown(e, conn.toId)}
@@ -1071,22 +1071,22 @@ export const HrCareerManagement = () => {
                       </button>
 
                       <div className="flex justify-between items-start min-w-0">
-                        <h4 className="font-extrabold text-[11px] leading-tight line-clamp-2 pr-2 text-slate-800">
+                        <h4 className="font-extrabold text-[11px] leading-tight line-clamp-2 pr-2 text-slate-800 dark:text-slate-100">
                           {roleObj.title}
                         </h4>
                         <span className={clsx(
                           "text-[8px] font-extrabold px-1.5 py-0.2 rounded uppercase tracking-wider scale-90 shrink-0",
-                          conn.type === 'vertical' ? "bg-blue-100 text-blue-800" : conn.type === 'diagonal' ? "bg-indigo-100 text-indigo-800" : "bg-slate-200 text-slate-700"
+                          conn.type === 'vertical' ? "bg-blue-100 text-blue-800 dark:bg-blue-950/40 dark:text-blue-300" : conn.type === 'diagonal' ? "bg-indigo-100 text-indigo-800 dark:bg-indigo-950/40 dark:text-indigo-300" : "bg-slate-200 text-slate-700 dark:bg-slate-800/40 dark:text-slate-350"
                         )}>
                           {conn.type === 'vertical' ? 'Vertical' : conn.type === 'diagonal' ? 'Diagonal' : 'Lateral'}
                         </span>
                       </div>
                       
                       <div className="flex justify-between items-center mt-1">
-                        <span className="text-[9px] font-bold text-slate-450 bg-slate-100 border border-slate-200 px-1.5 py-0.2 rounded-md">
+                        <span className="text-[9px] font-bold text-slate-450 dark:text-slate-300 bg-slate-100 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/50 px-1.5 py-0.2 rounded-md">
                           {roleObj.family.split(' ')[0]}
                         </span>
-                        <span className="text-[8px] font-extrabold text-slate-400 font-mono">
+                        <span className="text-[8px] font-extrabold text-slate-400 dark:text-slate-500 font-mono">
                           {conn.toId.toUpperCase()}
                         </span>
                       </div>
@@ -1096,29 +1096,29 @@ export const HrCareerManagement = () => {
               </div>
 
               {/* LEYENDA DEL LIENZO FLOTANTE */}
-              <div className="absolute top-4 left-4 z-30 bg-white/90 backdrop-blur-xs border border-slate-200 p-3 rounded-2xl shadow-md text-left text-[10px] space-y-1.5 max-w-[200px] pointer-events-auto">
-                <p className="font-bold text-slate-800 border-b border-slate-100 pb-1 flex items-center gap-1"><Info size={11} className="text-blue-600" /> Distribución Relativa</p>
-                <p className="text-slate-500 leading-normal">✓ <strong>Rol Base</strong>: Fijo abajo a la izquierda.</p>
-                <p className="text-slate-500 leading-normal">✓ <strong>Vertical</strong>: Arriba del rol base.</p>
-                <p className="text-slate-500 leading-normal">✓ <strong>Lateral</strong>: A la derecha al lado.</p>
-                <p className="text-slate-500 leading-normal">✓ <strong>Diagonal</strong>: En diagonal arriba-derecha.</p>
+              <div className="absolute top-4 left-4 z-30 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xs border border-slate-200 dark:border-slate-800 p-3 rounded-2xl shadow-md text-left text-[10px] space-y-1.5 max-w-[200px] pointer-events-auto">
+                <p className="font-bold text-slate-800 dark:text-slate-200 border-b border-slate-100 dark:border-slate-800 pb-1 flex items-center gap-1"><Info size={11} className="text-blue-600 dark:text-blue-400" /> Distribución Relativa</p>
+                <p className="text-slate-500 dark:text-slate-400 leading-normal">✓ <strong>Rol Base</strong>: Fijo abajo a la izquierda.</p>
+                <p className="text-slate-500 dark:text-slate-400 leading-normal">✓ <strong>Vertical</strong>: Arriba del rol base.</p>
+                <p className="text-slate-500 dark:text-slate-400 leading-normal">✓ <strong>Lateral</strong>: A la derecha al lado.</p>
+                <p className="text-slate-500 dark:text-slate-400 leading-normal">✓ <strong>Diagonal</strong>: En diagonal arriba-derecha.</p>
               </div>
 
               {/* PANEL DE CONTROL DE ZOOM FLOTANTE */}
-              <div className="absolute bottom-4 right-4 z-30 bg-white/95 backdrop-blur-xs border border-slate-200 rounded-2xl p-1.5 shadow-md flex items-center gap-2 pointer-events-auto">
+              <div className="absolute bottom-4 right-4 z-30 bg-white/95 dark:bg-slate-900/90 backdrop-blur-xs border border-slate-200 dark:border-slate-800 rounded-2xl p-1.5 shadow-md flex items-center gap-2 pointer-events-auto">
                 <button 
                   onClick={handleZoomOut} 
-                  className="p-1.5 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg cursor-pointer"
+                  className="p-1.5 text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg cursor-pointer"
                   title="Zoom Out (-)"
                 >
                   <ZoomOut size={14} />
                 </button>
-                <span className="text-[10px] font-extrabold font-mono text-slate-700 min-w-[35px] text-center">
+                <span className="text-[10px] font-extrabold font-mono text-slate-700 dark:text-slate-300 min-w-[35px] text-center">
                   {Math.round(zoomScale * 100)}%
                 </span>
                 <button 
                   onClick={handleZoomIn} 
-                  className="p-1.5 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg cursor-pointer"
+                  className="p-1.5 text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg cursor-pointer"
                   title="Zoom In (+)"
                 >
                   <ZoomIn size={14} />

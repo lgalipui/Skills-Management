@@ -212,7 +212,7 @@ export const CareerPaths = () => {
   }, [connections, selectedBaseRoleId]);
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-500 max-w-5xl mx-auto p-1 bg-[#FAFBFC]">
+    <div className="space-y-6 animate-in fade-in duration-500 max-w-5xl mx-auto p-1 bg-transparent">
       
       {/* CABECERA GIGANTE PREMIUM */}
       <div className="bg-white rounded-3xl p-6 md:p-8 shadow-xs border border-slate-100/80 relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-6">
@@ -221,7 +221,7 @@ export const CareerPaths = () => {
             Mi Desarrollo
           </div>
           <h1 className="text-3xl font-black text-slate-800 tracking-tight leading-none flex items-center gap-2">
-            <Compass className="text-[#007A33]" /> My Itineraries
+            <Compass className="text-[#007A33]" /> MyItineraries
           </h1>
           <p className="text-slate-500 text-xs md:text-sm leading-relaxed">
             Explora las rutas formales y alternativas de crecimiento diseñadas para tu rol en Cajamar. Analiza las brechas de competencias y convalidaciones para planificar tu próximo gran paso.
@@ -279,32 +279,32 @@ export const CareerPaths = () => {
               )}
             </div>
 
-            <div className="p-4 bg-emerald-50 border border-emerald-100 rounded-2xl space-y-2.5 text-left">
-              <h4 className="text-[10px] font-extrabold text-[#005021] uppercase tracking-wider">Leyenda de Itinerarios</h4>
-              <div className="space-y-2 text-[10px] font-bold text-[#005021]">
+            <div className="p-4 bg-emerald-50 border border-emerald-100 rounded-2xl space-y-2.5 text-left shadow-2xs">
+              <h4 className="text-[10px] font-extrabold text-emerald-800 dark:text-emerald-400 uppercase tracking-wider">Leyenda de Itinerarios</h4>
+              <div className="space-y-2 text-[10px] font-bold text-slate-700 dark:text-slate-200">
                 <div className="flex items-center gap-2">
-                  <span className="w-5 h-3 bg-sky-200 border border-sky-400 rounded-sm inline-block"></span>
+                  <span className="w-5 h-3 bg-sky-200 dark:bg-sky-500/20 border border-sky-400 dark:border-sky-400/40 rounded-sm inline-block shrink-0"></span>
                   <span>Tu Rol de Origen (Base)</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="w-5 h-3 bg-slate-200 border border-slate-400 rounded-sm inline-block"></span>
+                  <span className="w-5 h-3 bg-slate-200 dark:bg-slate-700/50 border border-slate-400 dark:border-slate-500/40 rounded-sm inline-block shrink-0"></span>
                   <span>Movimiento Lateral (Rotación)</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="w-5 h-3 bg-blue-100 border border-blue-300 rounded-sm inline-block"></span>
+                  <span className="w-5 h-3 bg-blue-100 dark:bg-blue-500/20 border border-blue-300 dark:border-blue-400/40 rounded-sm inline-block shrink-0"></span>
                   <span>Movimiento Vertical (Promoción)</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="w-5 h-3 bg-indigo-100 border border-indigo-300 rounded-sm inline-block"></span>
+                  <span className="w-5 h-3 bg-indigo-100 dark:bg-indigo-500/20 border border-indigo-300 dark:border-indigo-400/40 rounded-sm inline-block shrink-0"></span>
                   <span>Movimiento Diagonal (Cross-Functional)</span>
                 </div>
               </div>
             </div>
 
-            <div className="pt-2 text-center border-t border-slate-100">
+            <div className="pt-2 text-center border-t border-slate-100 dark:border-slate-800">
               <Link
                 to="/myskills"
-                className="inline-flex items-center gap-1 text-[11px] font-bold text-[#007A33] hover:underline"
+                className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-700 dark:text-emerald-400 hover:text-emerald-600 dark:hover:text-emerald-300 hover:underline"
               >
                 Consultar Mi Perfil de Competencias <ArrowRight size={12} />
               </Link>
@@ -359,17 +359,17 @@ export const CareerPaths = () => {
         </div>
 
         {/* PANEL DERECHO: EL MAPA GRÁFICO GRID CON SVG */}
-        <div className="lg:col-span-2 bg-white rounded-3xl p-6 shadow-xs border border-slate-100/80 flex flex-col overflow-x-auto">
+        <div className="lg:col-span-2 bg-white dark:bg-slate-900/10 backdrop-blur-md rounded-3xl p-6 shadow-xs border border-slate-100/80 dark:border-slate-800/40 flex flex-col overflow-x-auto">
           
           <div className="mb-4 flex items-center justify-between shrink-0">
-            <h3 className="font-bold text-slate-800 text-base flex items-center gap-1.5">
+            <h3 className="font-bold text-slate-800 dark:text-slate-100 text-base flex items-center gap-1.5">
               <Map size={18} className="text-[#007A33]" /> Mapa Interactivo de Itinerarios
             </h3>
-            <span className="text-[10px] font-bold text-slate-450 italic">Área: Tecnología de la Información</span>
+            <span className="text-[10px] font-bold text-slate-450 dark:text-slate-400 italic">Área: Tecnología de la Información</span>
           </div>
 
           {/* TABLERO COORDINADO GIGANTE (viewBox 900 x 600) */}
-          <div className="relative border border-slate-100 rounded-3xl overflow-hidden bg-slate-50/20 shrink-0 w-[840px] h-[580px] select-none shadow-inner">
+          <div className="relative border border-slate-100 dark:border-slate-800 rounded-3xl overflow-hidden bg-slate-50/20 dark:bg-slate-950/25 shrink-0 w-[840px] h-[580px] select-none shadow-inner">
             
             {/* SVG OVERLAY PARA FLECHAS VECTORIALES */}
             <svg 
@@ -471,11 +471,11 @@ export const CareerPaths = () => {
               const midX = (c.x1 + c.x2) / 2;
               const midY = (c.y1 + c.y2) / 2;
 
-              let pillBg = 'bg-slate-200 text-slate-700 border-slate-300';
+              let pillBg = 'bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border-slate-300 dark:border-slate-700';
               if (c.type === 'vertical') {
-                pillBg = 'bg-blue-50 text-blue-800 border-blue-200';
+                pillBg = 'bg-blue-50 dark:bg-blue-950/80 text-blue-800 dark:text-blue-300 border-blue-200 dark:border-blue-800';
               } else if (c.type === 'diagonal') {
-                pillBg = 'bg-indigo-50 text-indigo-850 border-indigo-200';
+                pillBg = 'bg-indigo-50 dark:bg-indigo-950/80 text-indigo-850 dark:text-indigo-300 border-indigo-200 dark:border-indigo-800';
               }
               const isHovered = hoveredTransition?.fromId === c.fromId && hoveredTransition?.toId === c.toId;
 
@@ -503,28 +503,28 @@ export const CareerPaths = () => {
                 const isBase = role.id === selectedBaseRoleId;
                 const isTargetOfSelected = connections.some(c => c.fromId === selectedBaseRoleId && c.toId === role.id);
 
-                let cardBorder = "border-slate-100";
-                let cardBg = "bg-white";
-                let titleColor = "text-slate-800";
+                let cardBorder = "border-slate-100 dark:border-slate-750";
+                let cardBg = "bg-white dark:bg-slate-900/40 dark:backdrop-blur-md";
+                let titleColor = "text-slate-800 dark:text-slate-100";
 
                 if (isBase) {
-                  cardBorder = "border-emerald-500 shadow-emerald-100/50 shadow-md ring-2 ring-emerald-100";
-                  cardBg = "bg-emerald-50/70 backdrop-blur-2xs";
-                  titleColor = "text-emerald-950";
+                  cardBorder = "border-emerald-500 dark:border-emerald-500/80 shadow-emerald-100/50 shadow-md ring-2 ring-emerald-100 dark:ring-emerald-900/30";
+                  cardBg = "bg-emerald-50/70 dark:bg-emerald-950/40 backdrop-blur-2xs dark:backdrop-blur-md";
+                  titleColor = "text-emerald-950 dark:text-emerald-300";
                 } else if (isTargetOfSelected) {
                   const transition = connections.find(c => c.fromId === selectedBaseRoleId && c.toId === role.id);
                   if (transition?.type === 'vertical') {
-                    cardBorder = "border-blue-300 shadow-blue-50 shadow-xs";
-                    cardBg = "bg-blue-50/50 backdrop-blur-2xs";
-                    titleColor = "text-blue-950";
+                    cardBorder = "border-blue-300 dark:border-blue-500/80 shadow-blue-50 shadow-xs";
+                    cardBg = "bg-blue-50/50 dark:bg-blue-950/40 backdrop-blur-2xs dark:backdrop-blur-md";
+                    titleColor = "text-blue-950 dark:text-blue-300";
                   } else if (transition?.type === 'diagonal') {
-                    cardBorder = "border-indigo-300 shadow-indigo-50 shadow-xs";
-                    cardBg = "bg-indigo-50/50 backdrop-blur-2xs";
-                    titleColor = "text-indigo-950";
+                    cardBorder = "border-indigo-300 dark:border-indigo-500/80 shadow-indigo-50 shadow-xs";
+                    cardBg = "bg-indigo-50/50 dark:bg-indigo-950/40 backdrop-blur-2xs dark:backdrop-blur-md";
+                    titleColor = "text-indigo-950 dark:text-indigo-300";
                   } else {
-                    cardBorder = "border-slate-350 shadow-xs";
-                    cardBg = "bg-slate-50";
-                    titleColor = "text-slate-900";
+                    cardBorder = "border-slate-350 dark:border-slate-700 shadow-xs";
+                    cardBg = "bg-slate-50 dark:bg-slate-900/40 dark:backdrop-blur-md";
+                    titleColor = "text-slate-900 dark:text-slate-100";
                   }
                 }
 
@@ -580,10 +580,10 @@ export const CareerPaths = () => {
                     </div>
                     
                     <div className="flex justify-between items-center mt-1">
-                      <span className="text-[9px] font-bold text-slate-400 capitalize bg-slate-100/60 border border-slate-150 px-1.5 py-0.2 rounded-md">
+                      <span className="text-[9px] font-bold text-slate-450 dark:text-slate-300 capitalize bg-slate-100/60 dark:bg-slate-800/40 border border-slate-150 dark:border-slate-700/50 px-1.5 py-0.2 rounded-md">
                         {role.family.split(' ')[0]}
                       </span>
-                      <span className="text-[8px] font-extrabold text-slate-350 font-mono">
+                      <span className="text-[8px] font-extrabold text-slate-350 dark:text-slate-500 font-mono">
                         {role.id.toUpperCase()}
                       </span>
                     </div>

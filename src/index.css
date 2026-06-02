@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* Habilitar Conmutación de Modo Oscuro basado en Clase (.dark) en Tailwind CSS v4 */
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   --color-primary-50: #f0fdf4;
   --color-primary-100: #dcfce7;
@@ -15,42 +18,406 @@
   --color-cajamar-light: #E6F2EB;
 }
 
+:root {
+  /* Variables de Color y Fondo en Modo Claro (Día) */
+  --bg-app: radial-gradient(circle at 10% 20%, #f4f6fa 0%, #eef1f6 90%);
+  --bg-card: rgba(255, 255, 255, 0.65);
+  --bg-card-hover: rgba(255, 255, 255, 0.85);
+  --border-card: rgba(0, 0, 0, 0.06);
+  --border-card-hover: rgba(0, 0, 0, 0.12);
+  --text-primary: #1e293b;
+  --text-secondary: #64748b;
+  --text-accent: #0f172a;
+  --shadow-card: 0 8px 30px rgba(0, 0, 0, 0.02);
+  --shadow-card-hover: 0 12px 30px rgba(0, 0, 0, 0.06);
+  --bg-header: rgba(255, 255, 255, 0.65);
+  --border-header: rgba(0, 0, 0, 0.05);
+  --bg-sidebar: #005021;
+  --bg-input: rgba(255, 255, 255, 0.8);
+  --border-input: #e2e8f0;
+  --text-input: #1e293b;
+  --backdrop-blur: blur(12px);
+  --bg-scroll-thumb: #cbd5e1;
+  --bg-scroll-thumb-hover: #007A33;
+}
+
+.dark {
+  /* Variables de Color y Fondo en Modo Oscuro (Noche) - Mercer/Inditex de Alta Fidelidad */
+  --bg-app: radial-gradient(circle at 12% 18%, #0f1425 0%, #060810 100%);
+  --bg-card: rgba(18, 25, 47, 0.55);
+  --bg-card-hover: rgba(24, 33, 62, 0.7);
+  --border-card: rgba(255, 255, 255, 0.08);
+  --border-card-hover: rgba(255, 255, 255, 0.15);
+  --text-primary: #e2e8f0;
+  --text-secondary: #94a3b8;
+  --text-accent: #f8fafc;
+  --shadow-card: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+  --shadow-card-hover: 0 12px 40px 0 rgba(0, 0, 0, 0.55);
+  --bg-header: rgba(8, 12, 24, 0.45);
+  --border-header: rgba(255, 255, 255, 0.05);
+  --bg-sidebar: rgba(10, 15, 30, 0.55);
+  --bg-input: rgba(255, 255, 255, 0.04);
+  --border-input: rgba(255, 255, 255, 0.08);
+  --text-input: #f8fafc;
+  --backdrop-blur: blur(16px);
+  --bg-scroll-thumb: rgba(0, 122, 51, 0.4);
+  --bg-scroll-thumb-hover: #007A33;
+}
+
 @layer base {
   body {
-    background-color: #f8fafc; /* bg-slate-50 */
-    color: #0f172a; /* text-slate-900 */
+    background: var(--bg-app) !important;
+    color: var(--text-primary) !important;
     font-family: 'Inter', system-ui, sans-serif;
+    transition: background 0.3s ease, color 0.3s ease;
   }
 }
 
-/* Custom Utilities for Premium animations */
-@layer utilities {
-  .glass-effect {
-    @apply bg-white/70 backdrop-blur-md border border-white/20 shadow-sm;
-  }
-  
-  .glass-panel {
-    @apply bg-white/90 backdrop-blur-xl border border-white/40 shadow-xl;
-  }
-
-  .hover-lift {
-    @apply transition-transform duration-300 hover:-translate-y-1 hover:shadow-lg;
-  }
+/* Overrides Globales para Layouts */
+header {
+  background: var(--bg-header) !important;
+  border-color: var(--border-header) !important;
+  backdrop-filter: var(--backdrop-blur) !important;
+  transition: all 0.3s ease;
 }
 
-/* Custom scrollbar for table container */
-.custom-scrollbar::-webkit-scrollbar {
+.dark header h2 {
+  color: var(--text-accent) !important;
+}
+
+/* Tarjetas y Contenedores Glasmórficos */
+.bg-white, 
+.bg-white\/70, 
+.bg-white\/80, 
+.bg-white\/90, 
+.glass-panel, 
+.glass-effect,
+[class*="bg-white/"] {
+  background: var(--bg-card) !important;
+  backdrop-filter: var(--backdrop-blur) !important;
+  border: 1px solid var(--border-card) !important;
+  box-shadow: var(--shadow-card) !important;
+  transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+/* Efectos de Hover y Elevación */
+.hover-lift:hover,
+.bg-white:hover {
+  background: var(--bg-card-hover) !important;
+  border-color: var(--border-card-hover) !important;
+  box-shadow: var(--shadow-card-hover) !important;
+}
+
+/* Overrides para Textos y Legibilidad en Ambos Modos */
+.text-slate-900, .dark .text-slate-900 { color: var(--text-accent) !important; }
+.text-slate-800, .dark .text-slate-800 { color: var(--text-primary) !important; }
+.text-slate-700, .text-slate-650, .text-slate-600, 
+.dark .text-slate-700, .dark .text-slate-650, .dark .text-slate-600 { 
+  color: var(--text-primary) !important; 
+}
+.text-slate-500, .text-slate-450, .text-slate-400,
+.dark .text-slate-500, .dark .text-slate-450, .dark .text-slate-400 { 
+  color: var(--text-secondary) !important; 
+}
+
+/* Overrides para Bordes */
+.border-slate-100, 
+.border-slate-200, 
+.border-slate-200\/50,
+.border-slate-300,
+.border-white\/5,
+.border-white\/10,
+.border-white\/20,
+.dark .border-slate-100,
+.dark .border-slate-200,
+.dark .border-white\/5,
+.dark .border-white\/10 {
+  border-color: var(--border-card) !important;
+}
+
+/* Estilos de Elementos de Formulario (Inputs, Selects, Textareas) */
+input[type="text"],
+input[type="number"],
+input[type="password"],
+input[type="email"],
+select,
+textarea {
+  background: var(--bg-input) !important;
+  border: 1px solid var(--border-input) !important;
+  color: var(--text-input) !important;
+  border-radius: 12px !important;
+  transition: all 0.3s ease !important;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+select:focus,
+textarea:focus {
+  border-color: #007A33 !important;
+  box-shadow: 0 0 0 2px rgba(0, 122, 51, 0.15) !important;
+  outline: none !important;
+}
+
+.dark select option {
+  background-color: #0c101d !important;
+  color: #f8fafc !important;
+}
+
+/* Tablas Premium Glasmórficas */
+table th {
+  background: rgba(0, 0, 0, 0.02) !important;
+  color: var(--text-secondary) !important;
+  border-bottom: 2px solid var(--border-card) !important;
+}
+
+.dark table th {
+  background: rgba(255, 255, 255, 0.02) !important;
+  color: var(--text-secondary) !important;
+}
+
+table td {
+  border-bottom: 1px solid var(--border-card) !important;
+  color: var(--text-primary) !important;
+}
+
+table tr:hover td {
+  background: rgba(0, 0, 0, 0.01) !important;
+}
+
+.dark table tr:hover td {
+  background: rgba(255, 255, 255, 0.01) !important;
+}
+
+/* Modales y Capas Superpuestas (Overlays) */
+.fixed.inset-0.bg-black\/50,
+.fixed.inset-0.bg-slate-900\/50,
+.fixed.inset-0.backdrop-blur-sm,
+.fixed.inset-0.backdrop-blur-xs {
+  backdrop-filter: blur(8px) !important;
+  background-color: rgba(0, 0, 0, 0.6) !important;
+}
+
+/* Luces Ambientales y Efectos de Destello en Modo Oscuro */
+.dark .absolute.top-0.right-0.bg-\[\#007A33\] {
+  opacity: 0.12 !important;
+  background-color: #00ff66 !important;
+}
+
+.dark .absolute.bottom-0.left-0.bg-blue-500 {
+  opacity: 0.1 !important;
+  background-color: #3b82f6 !important;
+}
+
+/* Tarjeta Verde de Progreso en Dashboard (Look Premium Glasmórfico de Acento) */
+.dark .bg-gradient-to-br.from-\[\#007A33\].to-\[\#005021\] {
+  background: linear-gradient(135deg, rgba(0, 122, 51, 0.3) 0%, rgba(0, 80, 33, 0.35) 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  backdrop-filter: var(--backdrop-blur) !important;
+  box-shadow: var(--shadow-card) !important;
+}
+
+/* Scrollbars Lumninosas Modernas */
+.custom-scrollbar::-webkit-scrollbar,
+::-webkit-scrollbar {
+  width: 6px;
   height: 6px;
 }
-.custom-scrollbar::-webkit-scrollbar-track {
-  background: #f1f5f9;
-  border-radius: 10px;
+.custom-scrollbar::-webkit-scrollbar-track,
+::-webkit-scrollbar-track {
+  background: transparent;
 }
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 10px;
-  transition: background 0.3s;
+.custom-scrollbar::-webkit-scrollbar-thumb,
+::-webkit-scrollbar-thumb {
+  background: var(--bg-scroll-thumb) !important;
+  border-radius: 10px !important;
 }
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #007A33;
+.custom-scrollbar::-webkit-scrollbar-thumb:hover,
+::-webkit-scrollbar-thumb:hover {
+  background: var(--bg-scroll-thumb-hover) !important;
+}
+
+/* ==========================================
+   ESTILOS PREMIUM PARA PASTILLAS Y ETIQUETAS (PILLS & BADGES)
+   ========================================== */
+
+/* Píldora Verde (Cubierto / Éxito) */
+.bg-emerald-50,
+.bg-emerald-100,
+[class*="bg-emerald-50"],
+[class*="bg-emerald-100"] {
+  background: rgba(16, 185, 129, 0.08) !important;
+  color: #047857 !important;
+  border: 1px solid rgba(16, 185, 129, 0.2) !important;
+}
+.dark .bg-emerald-50,
+.dark .bg-emerald-100,
+.dark [class*="bg-emerald-50"],
+.dark [class*="bg-emerald-100"] {
+  background: rgba(16, 185, 129, 0.12) !important;
+  color: #10b981 !important;
+  border: 1px solid rgba(16, 185, 129, 0.25) !important;
+}
+
+/* Píldora Ámbar (Pendiente / Advertencia) */
+.bg-amber-50,
+.bg-amber-100,
+[class*="bg-amber-50"],
+[class*="bg-amber-100"] {
+  background: rgba(245, 158, 11, 0.08) !important;
+  color: #b45309 !important;
+  border: 1px solid rgba(245, 158, 11, 0.2) !important;
+}
+.dark .bg-amber-50,
+.dark .bg-amber-100,
+.dark [class*="bg-amber-50"],
+.dark [class*="bg-amber-100"] {
+  background: rgba(245, 158, 11, 0.12) !important;
+  color: #fbbf24 !important;
+  border: 1px solid rgba(245, 158, 11, 0.25) !important;
+}
+
+/* Píldora Azul (Información / Primaria) */
+.bg-blue-50,
+.bg-blue-100,
+[class*="bg-blue-50"],
+[class*="bg-blue-100"] {
+  background: rgba(59, 130, 246, 0.08) !important;
+  color: #1d4ed8 !important;
+  border: 1px solid rgba(59, 130, 246, 0.2) !important;
+}
+.dark .bg-blue-50,
+.dark .bg-blue-100,
+.dark [class*="bg-blue-50"],
+.dark [class*="bg-blue-100"] {
+  background: rgba(59, 130, 246, 0.12) !important;
+  color: #60a5fa !important;
+  border: 1px solid rgba(59, 130, 246, 0.25) !important;
+}
+
+/* Píldora Púrpura */
+.bg-purple-50,
+.bg-purple-100,
+[class*="bg-purple-50"],
+[class*="bg-purple-100"] {
+  background: rgba(168, 85, 247, 0.08) !important;
+  color: #6d28d9 !important;
+  border: 1px solid rgba(168, 85, 247, 0.2) !important;
+}
+.dark .bg-purple-50,
+.dark .bg-purple-100,
+.dark [class*="bg-purple-50"],
+.dark [class*="bg-purple-100"] {
+  background: rgba(168, 85, 247, 0.12) !important;
+  color: #c084fc !important;
+  border: 1px solid rgba(168, 85, 247, 0.25) !important;
+}
+
+/* Píldora Rosa / Peligro */
+.bg-rose-50,
+.bg-rose-100,
+[class*="bg-rose-50"],
+[class*="bg-rose-100"] {
+  background: rgba(244, 63, 94, 0.08) !important;
+  color: #be123c !important;
+  border: 1px solid rgba(244, 63, 94, 0.2) !important;
+}
+.dark .bg-rose-50,
+.dark .bg-rose-100,
+.dark [class*="bg-rose-50"],
+.dark [class*="bg-rose-100"] {
+  background: rgba(244, 63, 94, 0.12) !important;
+  color: #fb7185 !important;
+  border: 1px solid rgba(244, 63, 94, 0.25) !important;
+}
+
+/* Píldora Indigo */
+.bg-indigo-50,
+.bg-indigo-100,
+[class*="bg-indigo-50"],
+[class*="bg-indigo-100"] {
+  background: rgba(99, 102, 241, 0.08) !important;
+  color: #4f46e5 !important;
+  border: 1px solid rgba(99, 102, 241, 0.2) !important;
+}
+.dark .bg-indigo-50,
+.dark .bg-indigo-100,
+.dark [class*="bg-indigo-50"],
+.dark [class*="bg-indigo-100"] {
+  background: rgba(99, 102, 241, 0.12) !important;
+  color: #818cf8 !important;
+  border: 1px solid rgba(99, 102, 241, 0.25) !important;
+}
+
+/* Píldora Teal */
+.bg-teal-50,
+.bg-teal-100,
+[class*="bg-teal-50"],
+[class*="bg-teal-100"] {
+  background: rgba(20, 184, 166, 0.08) !important;
+  color: #0d9488 !important;
+  border: 1px solid rgba(20, 184, 166, 0.2) !important;
+}
+.dark .bg-teal-50,
+.dark .bg-teal-100,
+.dark [class*="bg-teal-50"],
+.dark [class*="bg-teal-100"] {
+  background: rgba(20, 184, 166, 0.12) !important;
+  color: #2dd4bf !important;
+  border: 1px solid rgba(20, 184, 166, 0.25) !important;
+}
+
+/* Píldora Orange */
+.bg-orange-50,
+.bg-orange-100,
+[class*="bg-orange-50"],
+[class*="bg-orange-100"] {
+  background: rgba(249, 115, 22, 0.08) !important;
+  color: #ea580c !important;
+  border: 1px solid rgba(249, 115, 22, 0.2) !important;
+}
+.dark .bg-orange-50,
+.dark .bg-orange-100,
+.dark [class*="bg-orange-50"],
+.dark [class*="bg-orange-100"] {
+  background: rgba(249, 115, 22, 0.12) !important;
+  color: #fb923c !important;
+  border: 1px solid rgba(249, 115, 22, 0.25) !important;
+}
+
+/* Píldora Gris / Categorías (Técnica, Metodología...) */
+.bg-slate-100,
+.bg-slate-200,
+[class*="bg-slate-100"],
+[class*="bg-slate-200"] {
+  background: rgba(0, 0, 0, 0.04) !important;
+  color: #475569 !important;
+  border: 1px solid rgba(0, 0, 0, 0.06) !important;
+}
+.dark .bg-slate-100,
+.dark .bg-slate-200,
+.dark [class*="bg-slate-100"],
+.dark [class*="bg-slate-200"] {
+  background: rgba(255, 255, 255, 0.06) !important;
+  color: #cbd5e1 !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+/* ==========================================
+   BARRA DE INFORMACIÓN Y SECCIONES DE RESUMEN (BG-SLATE-50)
+   ========================================== */
+.bg-slate-50,
+[class*="bg-slate-50"] {
+  background: rgba(0, 0, 0, 0.015) !important;
+  border: 1px solid rgba(0, 0, 0, 0.05) !important;
+  backdrop-filter: var(--backdrop-blur) !important;
+  border-radius: 16px !important;
+}
+
+.dark .bg-slate-50,
+.dark [class*="bg-slate-50"] {
+  background: var(--bg-card) !important;
+  border: 1px solid var(--border-card) !important;
+  backdrop-filter: var(--backdrop-blur) !important;
+  box-shadow: var(--shadow-card) !important;
+  border-radius: 16px !important;
 }

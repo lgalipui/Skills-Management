@@ -126,7 +126,7 @@ export const PeerNomination = () => {
   };
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-500 max-w-5xl mx-auto p-1 bg-[#FAFBFC] min-h-[85vh]">
+    <div className="space-y-6 animate-in fade-in duration-500 max-w-5xl mx-auto p-1 bg-transparent min-h-[85vh]">
       
       {/* CABECERA GIGANTE PREMIUM */}
       <div className="bg-white rounded-3xl p-6 md:p-8 shadow-xs border border-slate-100/80 relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-6">

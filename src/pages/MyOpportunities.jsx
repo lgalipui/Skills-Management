@@ -218,15 +218,15 @@ export const MyOpportunities = () => {
                           layout="vertical"
                           margin={{ top: 5, right: 20, left: 0, bottom: 5 }}
                         >
-                          <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} stroke="#E2E8F0" />
-                          <XAxis type="number" domain={[0, 5]} ticks={[1, 2, 3, 4, 5]} stroke="#94A3B8" fontSize={9} />
-                          <YAxis dataKey="name" type="category" width={80} stroke="#475569" fontWeight="bold" fontSize={9} />
+                          <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} stroke="var(--border-card)" />
+                          <XAxis type="number" domain={[0, 5]} ticks={[1, 2, 3, 4, 5]} stroke="var(--text-secondary)" fontSize={9} />
+                          <YAxis dataKey="name" type="category" width={80} stroke="var(--text-primary)" fontWeight="bold" fontSize={9} />
                           <RechartsTooltip 
-                            cursor={{fill: '#F1F5F9'}} 
+                            cursor={{fill: 'rgba(255, 255, 255, 0.05)'}} 
                             contentStyle={{borderRadius: '8px', border: 'none', boxShadow: '0 2px 4px -1px rgb(0 0 0 / 0.05)', fontSize: 10}}
                           />
                           <Legend wrapperStyle={{paddingTop: '5px', fontSize: 10}} />
-                          <Bar dataKey="Requerido" fill="#CBD5E1" radius={[0, 3, 3, 0]} barSize={12} />
+                          <Bar dataKey="Requerido" fill="var(--border-card-hover)" radius={[0, 3, 3, 0]} barSize={12} />
                           <Bar dataKey="Actual" fill="#007A33" radius={[0, 3, 3, 0]} barSize={12} />
                         </BarChart>
                       </ResponsiveContainer>

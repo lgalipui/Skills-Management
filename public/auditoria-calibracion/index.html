@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard de Calibración de Competencias | Cajamar</title>
+  
+  <!-- Google Fonts: Outfit (Heading) e Inter (Body) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- ApexCharts Library -->
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+  
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Gradientes de Fondo -->
+  <div class="bg-gradient-1"></div>
+  <div class="bg-gradient-2"></div>
+
+  <div class="app-container">
+    
+    <!-- PANEL DE CONTROL LATERAL -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="logo">
+          <span class="logo-accent">Skill</span>Calibrate
+        </div>
+        <p class="sidebar-subtitle">Auditoría Interna</p>
+      </div>
+
+      <!-- Selector de Cohorte -->
+      <div class="sidebar-section">
+        <label for="cohort-selector" class="section-label">Cohorte a Calibrar</label>
+        <div class="select-wrapper">
+          <select id="cohort-selector">
+            <option value="1" selected>1. Auditor asistente (9)</option>
+            <option value="2">2. Auditor Senior (25)</option>
+            <option value="3">3. Project Manager (9)</option>
+            <option value="4">4. Todos los supervisores (12)</option>
+            <option value="5">5. Todos los Directores (7)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Buscador de Colaborador -->
+      <div class="sidebar-section">
+        <label for="colab-search" class="section-label">Buscar Colaborador</label>
+        <div class="search-wrapper">
+          <input type="text" id="colab-search" placeholder="Escribe ID (ej: AT_050)...">
+          <span class="search-icon">🔍</span>
+        </div>
+      </div>
+
+      <div class="sidebar-footer">
+        <p>© 2026 Mercer</p>
+        <p class="footer-version">v1.2.0 • Calibración</p>
+      </div>
+    </aside>
+
+    <!-- PANEL PRINCIPAL -->
+    <main class="main-panel">
+      
+      <!-- CABECERA DEL DASHBOARD -->
+      <header class="dashboard-header">
+        <div class="header-info">
+          <h1 id="cohort-title">Cohorte: Auditor Asistente</h1>
+          <p id="cohort-description" class="header-subtitle">Sesión de Calibración de Competencias del Equipo de Auditoría</p>
+        </div>
+        
+        <!-- Tarjetas de Estadísticas Clave -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <span class="stat-label">Colaboradores</span>
+            <span class="stat-value" id="stat-colabs">0</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">Skills Evaluadas</span>
+            <span class="stat-value" id="stat-evals">0</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">Grado Coincidencia</span>
+            <span class="stat-value text-emerald" id="stat-coincidence">0%</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">Sesgo General</span>
+            <span class="stat-value" id="stat-bias">0.00</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- BARRA DE PESTAÑAS (TABS) -->
+      <nav class="tabs-navigation">
+        <button class="tab-btn active" data-tab="tab-individual">
+          <span class="tab-icon">🎯</span> Calibración Evaluados
+        </button>
+        <button class="tab-btn" data-tab="tab-evaluadores">
+          <span class="tab-icon">👤</span> Calibración de Evaluadores
+        </button>
+        <button class="tab-btn" data-tab="tab-cohorte">
+          <span class="tab-icon">📊</span> Gap de Skills
+        </button>
+        <button class="tab-btn" data-tab="tab-bbdd">
+          <span class="tab-icon">💾</span> BBDD y Edición
+        </button>
+      </nav>
+
+      <!-- CONTENIDOS DE LAS PESTAÑAS -->
+      <div class="tab-content-container">
+        
+        <!-- PESTAÑA 1: CALIBRACIÓN DE EVALUADORES -->
+        <section class="tab-content" id="tab-evaluadores">
+          <!-- NUEVO: Matriz de Calibración de Evaluadores -->
+          <div class="chart-card card-glass" style="margin-bottom: 20px;">
+            <div class="card-header flex-header">
+              <div>
+                <h3>Matriz de Calibración de Evaluadores (Alineamiento vs. Sesgo)</h3>
+                <p class="card-subtitle">Calificación promedio otorgada por el Manager (X) vs. Sesgo promedio Manager-Colaborador (Y).</p>
+              </div>
+              <span class="info-tooltip" title="Cada punto representa a un Manager. El eje X muestra el promedio absoluto de sus calificaciones y el eje Y muestra su desviación (sesgo) promedio frente a la autoevaluación de sus colaboradores. Permite identificar rigidez o benevolencia de un vistazo.">ℹ️</span>
+            </div>
+            <div class="chart-container" id="chart-evaluator-matrix" style="min-height: 320px;"></div>
+          </div>
+
+          <div class="grid-2col">
+            <!-- Gráfico 1: Sesgo de Evaluación -->
+            <div class="chart-card card-glass">
+              <div class="card-header">
+                <h3>Sesgo Evaluación Responsable vs. Autoevaluación</h3>
+                <span class="info-tooltip" title="Media de (Revisión Responsable − Autoevaluación) por evaluador. Valores > 0 indican benevolencia; < 0 indican severidad.">ℹ️</span>
+              </div>
+              <div class="chart-container" id="chart-bias-manager"></div>
+            </div>
+
+            <!-- Gráfico 2: Coincidencia por Responsable -->
+            <div class="chart-card card-glass">
+              <div class="card-header">
+                <h3>Distribución del Grado de Coincidencia por Responsable</h3>
+                <span class="info-tooltip" title="Porcentaje de evaluaciones por manager que coinciden exactamente con la autoevaluación, son más altas o más bajas.">ℹ️</span>
+              </div>
+              <div class="chart-container" id="chart-coincidence-manager"></div>
+            </div>
+          </div>
+
+          <!-- Gráfico 3: Mapa de Calor Responsable x Capacidad -->
+          <div class="chart-card card-glass mt-4">
+            <div class="card-header flex-header">
+              <div>
+                <h3>Mapa de Calor: Responsable × Capacidad (Evaluación Manager)</h3>
+                <p class="card-subtitle">Nivel medio otorgado por cada Responsable en cada competencia clave de la cohorte.</p>
+              </div>
+              <span class="info-tooltip" title="Visualiza si hay efecto halo (puntuaciones idénticas en todo) o discrepancias críticas entre evaluadores.">ℹ️</span>
+            </div>
+            <div class="chart-container heatmap-container" id="chart-heatmap-manager"></div>
+          </div>
+        </section>
+
+        <!-- PESTAÑA 2: ANÁLISIS DE COHORTE Y ROLES -->
+        <section class="tab-content" id="tab-cohorte">
+          <div class="grid-2col">
+            <!-- Gráfico 4: Radar de Perfil Competencial -->
+            <div class="chart-card card-glass">
+              <div class="card-header">
+                <h3>Radar de Perfil Competencial de la Cohorte</h3>
+                <span class="info-tooltip" title="Promedio de los Niveles Requeridos frente a la Autoevaluación y Revisión del Responsable en toda la cohorte.">ℹ️</span>
+              </div>
+              <div class="chart-container" id="chart-radar-cohort"></div>
+            </div>
+
+            <!-- Gráfico 5: Ranking de Brechas por Competencia (Movido aquí) -->
+            <div class="chart-card card-glass">
+              <div class="card-header flex-header">
+                <div>
+                  <h3>Ranking de Brechas por Competencia</h3>
+                  <p class="card-subtitle" style="font-size: 11px; margin-top: 4px;">Brecha promedio (Nivel Requerido − Revisión Responsable) según categoría de habilidades.</p>
+                </div>
+                <div class="skills-filter-tabs" style="display: flex; gap: 4px;">
+                  <button class="filter-tab-btn active" data-category="criticas">Críticas</button>
+                  <button class="filter-tab-btn" data-category="primarias">Primarias</button>
+                  <button class="filter-tab-btn" data-category="secundarias">Secundarias</button>
+                </div>
+              </div>
+              <div class="chart-container" id="chart-critical-gaps"></div>
+            </div>
+          </div>
+
+          <!-- Gráfico 6: Distribución de Niveles por Rol (Más estrecho) -->
+          <div class="chart-card card-glass mt-4" style="max-width: 650px; margin: 20px auto;">
+            <div class="card-header">
+              <h3>Distribución de Niveles por Rol (Evaluación del Responsable)</h3>
+              <span class="info-tooltip" title="Recuento del número de habilidades en cada nivel (Básico, Intermedio, Avanzado, Experto) que el manager asignó a cada rol.">ℹ️</span>
+            </div>
+            <div class="chart-container" id="chart-distribution-levels"></div>
+          </div>
+        </section>
+
+        <!-- PESTAÑA 3: DETALLE INDIVIDUAL Y OUTLIERS -->
+        <section class="tab-content active" id="tab-individual">
+          <div class="grid-2col-unequal">
+            
+            <!-- Columna Izquierda: Gráficos de Alineamiento y Brechas por Categoría -->
+            <div class="column-left">
+              <!-- NUEVO: Distribución Unidimensional de Evaluaciones de Manager -->
+              <div class="chart-card card-glass" style="margin-bottom: 20px;">
+                <div class="card-header flex-header">
+                  <div>
+                    <h3>Distribución de Evaluaciones (Normalizado respecto al Requerimiento)</h3>
+                    <p class="card-subtitle">Desviación promedio de la calificación de cada colaborador frente a la expectativa media de su nivel (0 = En expectativa).</p>
+                  </div>
+                  <span class="info-tooltip" title="Cada punto representa a un colaborador en relación con su nivel requerido medio. Valores > 0 indican superación del perfil; < 0 indican brecha de conocimiento. Los puntos se apilan verticalmente para evitar solapes. Haz clic en un punto para ver su expediente.">ℹ️</span>
+                </div>
+                <div class="chart-container" id="chart-colab-distribution" style="min-height: 280px;"></div>
+              </div>
+
+              <!-- Gráfico 7: Alineamiento de Calificación Individual -->
+              <div class="chart-card card-glass">
+                <div class="card-header flex-header">
+                  <div>
+                    <h3>Alineamiento de Calificación Individual</h3>
+                    <p class="card-subtitle">Autoevaluación (fila superior) vs. Revisión del Responsable (fila inferior, coloreado por Manager).</p>
+                  </div>
+                  <span class="info-tooltip" title="Muestra el promedio de Autoevaluación frente al promedio de Revisión del Responsable para cada colaborador de la cohorte. El color del manager permite ver alineamientos y sesgos individuales.">ℹ️</span>
+                </div>
+                <div class="chart-container" id="chart-colab-alignment" style="min-height: 400px;"></div>
+              </div>
+
+
+            </div>
+            
+            <!-- Columna Derecha: Tabla y Ficha de Calibración -->
+            <div class="column-right">
+              <!-- Lista de Colaboradores de la Cohorte -->
+              <div class="chart-card card-glass list-card">
+                <div class="card-header flex-header">
+                  <h3>Colaboradores en Cohorte</h3>
+                  <span class="count-badge" id="list-colab-count">0</span>
+                </div>
+                <div class="list-search-container">
+                  <input type="text" id="colab-table-search" placeholder="Filtrar por ID o Rol...">
+                </div>
+                <div class="table-scroll-wrapper">
+                  <table class="colab-table" id="colab-data-table">
+                    <thead>
+                      <tr>
+                        <th>ID Colaborador</th>
+                        <th>Rol</th>
+                        <th>Coincidencia</th>
+                        <th>Brecha Med.</th>
+                      </tr>
+                    </thead>
+                    <tbody id="colab-table-body">
+                      <!-- Se rellenará dinámicamente -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- PESTAÑA 4: BBDD Y EDICIÓN -->
+        <section class="tab-content" id="tab-bbdd">
+          <!-- Sub-navegación estilo Excel -->
+          <div class="sub-tabs-navigation" style="display: flex; gap: 8px; margin-bottom: 20px; padding: 4px; background: rgba(15,23,42,0.4); border: 1px solid var(--border-color); border-radius: var(--border-radius-sm); width: fit-content;">
+            <button class="sub-tab-btn active" data-subtab="subtab-evaluaciones" style="background: none; border: none; padding: 8px 16px; color: var(--text-secondary); cursor: pointer; border-radius: 6px; font-weight: 500; font-size: 12px; transition: var(--transition-fast); display: flex; align-items: center; gap: 6px;">
+              <span>📋</span> Resultados (Evaluaciones)
+            </button>
+            <button class="sub-tab-btn" data-subtab="subtab-colaboradores" style="background: none; border: none; padding: 8px 16px; color: var(--text-secondary); cursor: pointer; border-radius: 6px; font-weight: 500; font-size: 12px; transition: var(--transition-fast); display: flex; align-items: center; gap: 6px;">
+              <span>👤</span> Colaboradores y Roles
+            </button>
+            <button class="sub-tab-btn" data-subtab="subtab-roles" style="background: none; border: none; padding: 8px 16px; color: var(--text-secondary); cursor: pointer; border-radius: 6px; font-weight: 500; font-size: 12px; transition: var(--transition-fast); display: flex; align-items: center; gap: 6px;">
+              <span>📊</span> Roles y Capacidades (Requeridos)
+            </button>
+          </div>
+
+          <!-- CONTENIDO SUBTAB A: EVALUACIONES -->
+          <div class="subtab-content active-subtab" id="subtab-evaluaciones">
+            <div class="chart-card card-glass">
+              <div class="card-header flex-header">
+                <div>
+                  <h3>Base de Datos: Evaluaciones y Puntuaciones</h3>
+                  <p class="card-subtitle">Visualiza, edita calificaciones inline, añade nuevas capacidades o elimina registros de evaluación.</p>
+                </div>
+                <div class="table-actions-flex" style="display: flex; gap: 12px; align-items: center;">
+                  <button id="btn-open-eval-form" class="btn-text" style="background: rgba(37, 99, 235, 0.15); border: 1px solid rgba(37, 99, 235, 0.3); color: var(--color-primary); padding: 8px 16px; border-radius: 8px; font-weight: 600; font-size:12px; cursor: pointer;">＋ Añadir Evaluación</button>
+                  <div style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-secondary);">
+                    <input type="checkbox" id="chk-show-all-db" style="accent-color: var(--color-primary); cursor:pointer;">
+                    <label for="chk-show-all-db" style="cursor:pointer; user-select:none;">Mostrar toda la BBDD (1,800+ filas)</label>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Formulario de Añadir Evaluación (Oculto por defecto) -->
+              <div id="add-eval-form-panel" class="form-glass-panel" style="display: none; margin-bottom: 20px; padding: 20px; border-radius: 12px; border: 1px solid var(--border-color); background: rgba(15,23,42,0.65);">
+                <h4 style="margin-bottom: 14px; font-family: var(--font-heading); color:#f1f5f9;">Añadir Registro de Evaluación</h4>
+                <div class="form-grid-inputs" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 12px;">
+                  <div>
+                    <label style="font-size: 11px; color: var(--text-secondary); display:block; margin-bottom:4px;">ID Colaborador</label>
+                    <input type="text" id="add-eval-colab-id" placeholder="ej: AT_050..." required style="padding: 8px 10px; font-size: 12px;">
+                  </div>
+                  <div>
+                    <label style="font-size: 11px; color: var(--text-secondary); display:block; margin-bottom:4px;">Rol Colaborador</label>
+                    <input type="text" id="add-eval-colab-role" placeholder="ej: Auditor Asistente..." required style="padding: 8px 10px; font-size: 12px;">
+                  </div>
+                  <div>
+                    <label style="font-size: 11px; color: var(--text-secondary); display:block; margin-bottom:4px;">ID Responsable (Manager)</label>
+                    <input type="text" id="add-eval-manager-id" placeholder="ej: A01..." required style="padding: 8px 10px; font-size: 12px;">
+                  </div>
+                  <div>
+                    <label style="font-size: 11px; color: var(--text-secondary); display:block; margin-bottom:4px;">Capacidad / Habilidad</label>
+                    <input type="text" id="add-eval-skill-name" placeholder="ej: Modelo de negocio..." required style="padding: 8px 10px; font-size: 12px;">
+                  </div>
+                </div>
+                <div class="form-grid-inputs" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 16px;">
+                  <div>
+                    <label style="font-size: 11px; color: var(--text-secondary); display:block; margin-bottom:4px;">Nivel Requerido</label>
+                    <select id="add-eval-nivel-req" style="padding: 8px 10px; font-size: 12px; background-color: rgba(15, 23, 42, 0.6);">
+                      <option value="Básico">Básico</option>
+                      <option value="Intermedio" selected>Intermedio</option>
+                      <option value="Avanzado">Avanzado</option>
+                      <option value="Experto">Experto</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label style="font-size: 11px; color: var(--text-secondary); display:block; margin-bottom:4px;">Autoevaluación</label>
+                    <select id="add-eval-nivel-auto" style="padding: 8px 10px; font-size: 12px; background-color: rgba(15, 23, 42, 0.6);">
+                      <option value="Básico">Básico</option>
+                      <option value="Intermedio" selected>Intermedio</option>
+                      <option value="Avanzado">Avanzado</option>
+                      <option value="Experto">Experto</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label style="font-size: 11px; color: var(--text-secondary); display:block; margin-bottom:4px;">Revisión Responsable</label>
+                    <select id="add-eval-nivel-resp" style="padding: 8px 10px; font-size: 12px; background-color: rgba(15, 23, 42, 0.6);">
+                      <option value="Básico">Básico</option>
+                      <option value="Intermedio" selected>Intermedio</option>
+                      <option value="Avanzado">Avanzado</option>
+                      <option value="Experto">Experto</option>
+                    </select>
+                  </div>
+                </div>
+                <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                  <button id="btn-cancel-eval-add" class="btn-text" style="color: var(--text-secondary); font-size:12px; cursor:pointer;">Cancelar</button>
+                  <button id="btn-save-eval-record" style="background: var(--color-primary); border: none; color: #fff; padding: 8px 16px; border-radius: 8px; font-weight: 600; font-size:12px; cursor: pointer;">Guardar Registro</button>
+                </div>
+              </div>
+
+              <!-- Filtro de Búsqueda -->
+              <div class="list-search-container" style="margin-bottom: 14px;">
+                <input type="text" id="eval-table-search" placeholder="Buscar evaluaciones por ID, Rol, Capacidad o Manager..." style="padding: 10px 14px; width:100%;">
+              </div>
+
+              <!-- Tabla principal de Evaluaciones -->
+              <div class="table-scroll-wrapper" style="max-height: 520px; overflow-y: auto; border-radius: 8px; border: 1px solid var(--border-color);">
+                <table class="colab-table" id="db-evaluations-table" style="font-size:12px;">
+                  <thead>
+                    <tr>
+                      <th>ID Colaborador</th>
+                      <th>Rol Colaborador</th>
+                      <th>Manager</th>
+                      <th>Capacidad / Habilidad</th>
+                      <th>Nivel Requerido</th>
+                      <th>Autoevaluación</th>
+                      <th>Revisión Responsable</th>
+                      <th style="text-align: center; width: 60px;">Brecha</th>
+                      <th>Alineamiento</th>
+                      <th style="text-align: center; width: 60px;">Acción</th>
+                    </tr>
+                  </thead>
+                  <tbody id="db-evaluations-table-body">
+                    <!-- Se cargará mediante JS -->
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- Paginación de Evaluaciones -->
+              <div id="eval-table-pagination" style="display: flex; justify-content: space-between; align-items: center; margin-top: 14px; font-size: 12px; color: var(--text-secondary);">
+                <span id="eval-pagination-info">Mostrando 1-100 de 1805 filas</span>
+                <div style="display: flex; gap: 8px;">
+                  <button id="btn-eval-prev-page" class="btn-text" style="background: rgba(255,255,255,0.04); border: 1px solid var(--border-color); padding: 4px 10px; border-radius: 4px; cursor: pointer; text-decoration:none;">Anterior</button>
+                  <button id="btn-eval-next-page" class="btn-text" style="background: rgba(255,255,255,0.04); border: 1px solid var(--border-color); padding: 4px 10px; border-radius: 4px; cursor: pointer; text-decoration:none;">Siguiente</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- CONTENIDO SUBTAB B: COLABORADORES -->
+          <div class="subtab-content" id="subtab-colaboradores" style="display: none;">
+            <div class="chart-card card-glass">
+              <div class="card-header flex-header">
+                <div>
+                  <h3>Base de Datos: Listado de Colaboradores</h3>
+                  <p class="card-subtitle">Visualiza, edita cargos inline o gestores directos. Añade nuevos miembros al equipo o elimínalos en cascada.</p>
+                </div>
+                <div class="table-actions-flex" style="display: flex; gap: 12px; align-items: center;">
+                  <button id="btn-open-colab-form" class="btn-text" style="background: rgba(37, 99, 235, 0.15); border: 1px solid rgba(37, 99, 235, 0.3); color: var(--color-primary); padding: 8px 16px; border-radius: 8px; font-weight: 600; font-size:12px; cursor: pointer;">＋ Añadir Colaborador</button>
+                </div>
+              </div>
+
+              <!-- Formulario de Añadir Colaborador (Oculto por defecto) -->
+              <div id="add-colab-form-panel" class="form-glass-panel" style="display: none; margin-bottom: 20px; padding: 20px; border-radius: 12px; border: 1px solid var(--border-color); background: rgba(15,23,42,0.65);">
+                <h4 style="margin-bottom: 14px; font-family: var(--font-heading); color:#f1f5f9;">Añadir Nuevo Colaborador</h4>
+                <div class="form-grid-inputs" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 16px;">
+                  <div>
+                    <label style="font-size: 11px; color: var(--text-secondary); display:block; margin-bottom:4px;">ID Colaborador</label>
+                    <input type="text" id="add-new-colab-id" placeholder="ej: AT_099..." required style="padding: 8px 10px; font-size: 12px;">
+                  </div>
+                  <div>
+                    <label style="font-size: 11px; color: var(--text-secondary); display:block; margin-bottom:4px;">Rol / Cargo</label>
+                    <input type="text" id="add-new-colab-role" placeholder="ej: Auditor Senior..." required style="padding: 8px 10px; font-size: 12px;">
+                  </div>
+                  <div>
+                    <label style="font-size: 11px; color: var(--text-secondary); display:block; margin-bottom:4px;">Responsable (Manager ID)</label>
+                    <input type="text" id="add-new-colab-manager" placeholder="ej: A02..." required style="padding: 8px 10px; font-size: 12px;">
+                  </div>
+                </div>
+                <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                  <button id="btn-cancel-colab-add" class="btn-text" style="color: var(--text-secondary); font-size:12px; cursor:pointer;">Cancelar</button>
+                  <button id="btn-save-colab-record" style="background: var(--color-primary); border: none; color: #fff; padding: 8px 16px; border-radius: 8px; font-weight: 600; font-size:12px; cursor: pointer;">Guardar Registro</button>
+                </div>
+              </div>
+
+              <!-- Filtro de Búsqueda -->
+              <div class="list-search-container" style="margin-bottom: 14px;">
+                <input type="text" id="colab-db-search" placeholder="Buscar colaboradores por ID, Rol o Responsable..." style="padding: 10px 14px; width:100%;">
+              </div>
+
+              <!-- Tabla de Colaboradores -->
+              <div class="table-scroll-wrapper" style="max-height: 520px; overflow-y: auto; border-radius: 8px; border: 1px solid var(--border-color);">
+                <table class="colab-table" id="db-collaborators-table" style="font-size:12px;">
+                  <thead>
+                    <tr>
+                      <th>ID Colaborador</th>
+                      <th>Rol Asignado</th>
+                      <th>Responsable (Manager)</th>
+                      <th style="text-align: center;">Capacidades Evaluadas</th>
+                      <th style="text-align: center; width: 80px;">Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody id="db-collaborators-table-body">
+                    <!-- Se cargará mediante JS -->
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- Paginación de Colaboradores -->
+              <div id="colab-table-pagination" style="display: flex; justify-content: space-between; align-items: center; margin-top: 14px; font-size: 12px; color: var(--text-secondary);">
+                <span id="colab-pagination-info">Mostrando 1-100 de 62 filas</span>
+                <div style="display: flex; gap: 8px;">
+                  <button id="btn-colab-prev-page" class="btn-text" style="background: rgba(255,255,255,0.04); border: 1px solid var(--border-color); padding: 4px 10px; border-radius: 4px; cursor: pointer; text-decoration:none;">Anterior</button>
+                  <button id="btn-colab-next-page" class="btn-text" style="background: rgba(255,255,255,0.04); border: 1px solid var(--border-color); padding: 4px 10px; border-radius: 4px; cursor: pointer; text-decoration:none;">Siguiente</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- CONTENIDO SUBTAB C: ROLES Y CAPACIDADES -->
+          <div class="subtab-content" id="subtab-roles" style="display: none;">
+            <div class="chart-card card-glass">
+              <div class="card-header flex-header">
+                <div>
+                  <h3>Base de Datos: Requerimientos de Roles y Capacidades</h3>
+                  <p class="card-subtitle">Visualiza la matriz de niveles requeridos por puesto. Si modificas un nivel, se recalcularán automáticamente todas las brechas del dashboard.</p>
+                </div>
+                <div class="table-actions-flex" style="display: flex; gap: 12px; align-items: center;">
+                  <button id="btn-open-role-form" class="btn-text" style="background: rgba(37, 99, 235, 0.15); border: 1px solid rgba(37, 99, 235, 0.3); color: var(--color-primary); padding: 8px 16px; border-radius: 8px; font-weight: 600; font-size:12px; cursor: pointer;">＋ Añadir Requerimiento</button>
+                </div>
+              </div>
+
+              <!-- Formulario de Añadir Requerimiento (Oculto por defecto) -->
+              <div id="add-role-form-panel" class="form-glass-panel" style="display: none; margin-bottom: 20px; padding: 20px; border-radius: 12px; border: 1px solid var(--border-color); background: rgba(15,23,42,0.65);">
+                <h4 style="margin-bottom: 14px; font-family: var(--font-heading); color:#f1f5f9;">Añadir Requerimiento de Competencia a un Rol</h4>
+                <div class="form-grid-inputs" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 16px;">
+                  <div>
+                    <label style="font-size: 11px; color: var(--text-secondary); display:block; margin-bottom:4px;">Rol Colaborador</label>
+                    <input type="text" id="add-new-role-name" placeholder="ej: Auditor Asistente..." required style="padding: 8px 10px; font-size: 12px;">
+                  </div>
+                  <div>
+                    <label style="font-size: 11px; color: var(--text-secondary); display:block; margin-bottom:4px;">Habilidad / Capacidad</label>
+                    <input type="text" id="add-new-role-skill" placeholder="ej: Modelo de negocio..." required style="padding: 8px 10px; font-size: 12px;">
+                  </div>
+                  <div>
+                    <label style="font-size: 11px; color: var(--text-secondary); display:block; margin-bottom:4px;">Nivel Requerido</label>
+                    <select id="add-new-role-req" style="padding: 8px 10px; font-size: 12px; background-color: rgba(15, 23, 42, 0.6);">
+                      <option value="Básico">Básico</option>
+                      <option value="Intermedio" selected>Intermedio</option>
+                      <option value="Avanzado">Avanzado</option>
+                      <option value="Experto">Experto</option>
+                    </select>
+                  </div>
+                </div>
+                <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                  <button id="btn-cancel-role-add" class="btn-text" style="color: var(--text-secondary); font-size:12px; cursor:pointer;">Cancelar</button>
+                  <button id="btn-save-role-record" style="background: var(--color-primary); border: none; color: #fff; padding: 8px 16px; border-radius: 8px; font-weight: 600; font-size:12px; cursor: pointer;">Guardar Registro</button>
+                </div>
+              </div>
+
+              <!-- Filtro de Búsqueda -->
+              <div class="list-search-container" style="margin-bottom: 14px;">
+                <input type="text" id="role-db-search" placeholder="Buscar requerimientos por Rol o Capacidad..." style="padding: 10px 14px; width:100%;">
+              </div>
+
+              <!-- Tabla de Roles y Requerimientos -->
+              <div class="table-scroll-wrapper" style="max-height: 520px; overflow-y: auto; border-radius: 8px; border: 1px solid var(--border-color);">
+                <table class="colab-table" id="db-roles-table" style="font-size:12px;">
+                  <thead>
+                    <tr>
+                      <th>Rol Colaborador</th>
+                      <th>Habilidad / Capacidad</th>
+                      <th>Nivel Requerido (Expectativa)</th>
+                      <th style="text-align: center; width: 120px;">Criticidad del Rol</th>
+                      <th style="text-align: center; width: 80px;">Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody id="db-roles-table-body">
+                    <!-- Se cargará mediante JS -->
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- Paginación de Roles -->
+              <div id="roles-table-pagination" style="display: flex; justify-content: space-between; align-items: center; margin-top: 14px; font-size: 12px; color: var(--text-secondary);">
+                <span id="roles-pagination-info">Mostrando 1-100 de 200 filas</span>
+                <div style="display: flex; gap: 8px;">
+                  <button id="btn-roles-prev-page" class="btn-text" style="background: rgba(255,255,255,0.04); border: 1px solid var(--border-color); padding: 4px 10px; border-radius: 4px; cursor: pointer; text-decoration:none;">Anterior</button>
+                  <button id="btn-roles-next-page" class="btn-text" style="background: rgba(255,255,255,0.04); border: 1px solid var(--border-color); padding: 4px 10px; border-radius: 4px; cursor: pointer; text-decoration:none;">Siguiente</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- FICHA DE DETALLE INDIVIDUAL (MODAL / DRAW SIDE SHEET) -->
+  <div class="modal-overlay" id="colab-details-modal">
+    <div class="modal-container">
+      <div class="modal-header">
+        <div>
+          <h2 id="modal-colab-id">Ficha de Calibración: AT_050</h2>
+          <p id="modal-colab-role" class="modal-subtitle">Supervisor de Riesgo de TI</p>
+        </div>
+        <button class="btn-close-modal" id="btn-close-modal">×</button>
+      </div>
+      
+      <div class="modal-body">
+        <!-- Tarjetas de Información Individual -->
+        <div class="modal-info-cards">
+          <div class="modal-stat-card">
+            <span class="modal-stat-label">Manager</span>
+            <span class="modal-stat-value" id="modal-manager-id">-</span>
+          </div>
+          <div class="modal-stat-card">
+            <span class="modal-stat-label">Coincidencia</span>
+            <span class="modal-stat-value text-emerald" id="modal-coincidence-pct">-</span>
+          </div>
+          <div class="modal-stat-card">
+            <span class="modal-stat-label">Brecha Media</span>
+            <span class="modal-stat-value" id="modal-average-gap">-</span>
+          </div>
+        </div>
+
+        <div class="modal-details-grid">
+          <!-- Gráfico de Competencias del Colaborador -->
+          <div class="modal-chart-section">
+            <h4>Perfil de Competencias del Colaborador</h4>
+            <div id="modal-colab-radar-chart" class="modal-radar-chart"></div>
+          </div>
+
+          <!-- Tabla de Capacidades Detalladas con Brechas -->
+          <div class="modal-table-section">
+            <h4>Detalle de Capacidades y Brechas</h4>
+            <div class="modal-table-wrapper">
+              <table class="modal-table">
+                <thead>
+                  <tr>
+                    <th>Capacidad</th>
+                    <th>Requerido</th>
+                    <th>Auto</th>
+                    <th>Manager</th>
+                    <th>Brecha</th>
+                  </tr>
+                </thead>
+                <tbody id="modal-table-body">
+                  <!-- Se rellenará dinámicamente -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Carga de Mock Data -->
+  <script src="mockData.js"></script>
+  <!-- Carga de Lógica Principal -->
+  <script src="app.js?v=2.6.2"></script>
+</body>
+</html>

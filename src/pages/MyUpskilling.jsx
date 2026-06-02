@@ -107,24 +107,28 @@ export const MyUpskilling = () => {
             return (
               <div key={skill.id} className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
                 <div className={clsx(
-                  "px-8 py-5 border-b flex justify-between items-center",
-                  skill.gap >= 2 ? "bg-amber-50 border-amber-100" : "bg-slate-50 border-slate-100"
+                  "px-8 py-5 border-b flex justify-between items-center bg-gradient-to-r transition-all duration-300",
+                  skill.gap >= 2 
+                    ? "from-amber-500/10 via-amber-500/2 to-transparent border-amber-500/15" 
+                    : "from-slate-500/5 via-slate-500/1 to-transparent border-slate-100/10"
                 )}>
                   <div>
                     <div className="flex items-center gap-3">
                       <h2 className="text-xl font-bold text-slate-800">{skill.name}</h2>
                       <span className={clsx(
-                        "text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide",
-                        skill.gap >= 2 ? "bg-amber-100 text-amber-700" : "bg-slate-200 text-slate-600"
+                        "text-[9px] font-black px-2 py-0.5 rounded-md uppercase tracking-wider border",
+                        skill.gap >= 2 
+                          ? "bg-amber-500/10 text-amber-500 border-amber-500/20" 
+                          : "bg-slate-500/10 text-slate-400 border-slate-500/20"
                       )}>
-                        Prioridad {priorityLevel}
+                        Prioridad {priorityLevel === "Crítica" ? "Crítica" : "Normal"}
                       </span>
                     </div>
-                    <p className="text-sm text-slate-500 mt-1">
-                      Nivel actual: <strong className="text-slate-700">{skill.level}</strong> → Requerido: <strong className="text-slate-700">{skill.required}</strong>
+                    <p className="text-sm text-[var(--text-secondary)] mt-1">
+                      Nivel actual: <strong className="text-[var(--text-accent)]">{skill.level}</strong> → Requerido: <strong className="text-[var(--text-accent)]">{skill.required}</strong>
                     </p>
                   </div>
-                  {skill.gap >= 2 && <AlertCircle className="text-amber-500 opacity-50" size={32} />}
+                  {skill.gap >= 2 && <AlertCircle className="text-amber-500 opacity-60" size={26} />}
                 </div>
 
                 <div className="p-8 bg-white">
@@ -144,7 +148,7 @@ export const MyUpskilling = () => {
                           </div>
                           <div className="p-4 flex flex-col flex-1">
                             <div className="flex justify-between items-start mb-1">
-                              <span className="text-xs font-semibold text-[#007A33] bg-emerald-100 px-2 py-0.5 rounded-md">Objetivo: Nivel {Math.min(skill.level + 1, skill.required)}</span>
+                              <span className="text-[10px] font-extrabold text-[#007A33] dark:text-emerald-450 bg-emerald-500/8 dark:bg-emerald-500/12 px-2 py-0.5 rounded-md border border-emerald-500/15">Objetivo: Nivel {Math.min(skill.level + 1, skill.required)}</span>
                               <span className="flex items-center gap-1 text-xs text-slate-500 font-medium">
                                 <Clock size={12} /> {course.duration}
                               </span>
