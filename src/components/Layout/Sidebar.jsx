@@ -31,7 +31,7 @@ export const Sidebar = () => {
     { path: '/', label: 'Dashboard', icon: LayoutDashboard, roles: ['Employee', 'Manager'] },
     { path: '/myskills', label: 'MySkills', icon: User, roles: ['Employee', 'Manager'] },
     { path: '/myupskilling', label: 'MyUpskilling', icon: GraduationCap, roles: ['Employee', 'Manager'] },
-    { path: '/career-paths', label: 'MyItineraries', icon: Map, roles: ['Employee', 'Manager'] },
+    { path: '/career-paths', label: 'MyDevelopment', icon: Map, roles: ['Employee', 'Manager'] },
     { path: '/myopportunities', label: 'MyOpportunities', icon: Briefcase, roles: ['Employee', 'Manager'] },
     { path: '/mynewroles', label: 'MyNewRoles', icon: TrendingUp, roles: ['Employee', 'Manager'] },
     { path: '/otherskills', label: 'OtherSkills', icon: Sparkles, roles: ['Employee', 'Manager'] },

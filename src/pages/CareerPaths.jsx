@@ -221,7 +221,7 @@ export const CareerPaths = () => {
             Mi Desarrollo
           </div>
           <h1 className="text-3xl font-black text-slate-800 tracking-tight leading-none flex items-center gap-2">
-            <Compass className="text-[#007A33]" /> MyItineraries
+            <Compass className="text-[#007A33]" /> MyDevelopment
           </h1>
           <p className="text-slate-500 text-xs md:text-sm leading-relaxed">
             Explora las rutas formales y alternativas de crecimiento diseñadas para tu rol en Cajamar. Analiza las brechas de competencias y convalidaciones para planificar tu próximo gran paso.
