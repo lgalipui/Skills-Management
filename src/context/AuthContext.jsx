@@ -841,6 +841,14 @@ export const AuthProvider = ({ children }) => {
     });
   };
 
+  const deleteDevelopmentPlan = (employeeId, year) => {
+    setDevelopmentPlans(prev => {
+      const updated = prev.filter(p => !(p.employeeId === Number(employeeId) && p.year === Number(year)));
+      localStorage.setItem('cajamar_development_plans', JSON.stringify(updated));
+      return updated;
+    });
+  };
+
   return (
     <AuthContext.Provider value={{ 
       darkMode,
@@ -898,7 +906,8 @@ export const AuthProvider = ({ children }) => {
       setEmployeeDossier,
       developmentPlans,
       saveDevelopmentPlan,
-      updatePlanStatus
+      updatePlanStatus,
+      deleteDevelopmentPlan
     }}>
       {children}
     </AuthContext.Provider>

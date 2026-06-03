@@ -3,7 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { 
   FileText, Check, X, AlertCircle, Calendar, ChevronRight, UserCheck, Plus, 
   Search, Award, TrendingUp, Edit3, Save, Clock, ShieldCheck, HelpCircle, 
-  ChevronDown, BookOpen, User, Users, SlidersHorizontal, MessageSquare
+  ChevronDown, BookOpen, User, Users, SlidersHorizontal, MessageSquare, Trash2
 } from 'lucide-react';
 import clsx from 'clsx';
 
@@ -14,6 +14,7 @@ export const DevelopmentPlans = () => {
     developmentPlans = [], 
     saveDevelopmentPlan, 
     updatePlanStatus,
+    deleteDevelopmentPlan,
     orgUnits = []
   } = useAuth();
 
@@ -26,7 +27,10 @@ export const DevelopmentPlans = () => {
 
   // --- MODO EMPLEADO ---
   const [isEditing, setIsEditing] = useState(false);
-  const [editedSkills, setEditedSkills] = useState({}); // { skillId: { targetLevel, action70, action20, action10 } }
+  const [editedSkills, setEditedSkills] = useState({}); // { skillId: { targetLevel, action70, action20, action10, skillName, category, isCustom } }
+  const [showCustomSkillForm, setShowCustomSkillForm] = useState(false);
+  const [customSkillName, setCustomSkillName] = useState('');
+  const [customSkillCategory, setCustomSkillCategory] = useState('Técnica');
 
   // --- MODO MÁNAGER ---
   const [selectedReportId, setSelectedReportId] = useState(null);
@@ -75,26 +79,20 @@ export const DevelopmentPlans = () => {
     return currentUser.skills || [];
   }, [currentUser]);
 
-  // Inicializar modo edición con los datos del plan actual o los de las habilidades por defecto
+  // Inicializar modo edición con los datos del plan actual
   const handleStartEdit = () => {
     const skillsData = {};
     
     if (myPlan && myPlan.skills) {
       myPlan.skills.forEach(s => {
         skillsData[s.skillId] = {
+          skillName: s.skillName || s.skillId,
+          category: s.category || 'Técnica',
           targetLevel: s.targetLevel || 3,
           action70: s.action70 || '',
           action20: s.action20 || '',
-          action10: s.action10 || ''
-        };
-      });
-    } else {
-      userRoleSkills.forEach(s => {
-        skillsData[s.id] = {
-          targetLevel: Math.min((s.level || 1) + 1, 5),
-          action70: '',
-          action20: '',
-          action10: ''
+          action10: s.action10 || '',
+          isCustom: s.isCustom || false
         };
       });
     }
@@ -103,17 +101,80 @@ export const DevelopmentPlans = () => {
     setIsEditing(true);
   };
 
+  // Eliminar competencia del plan temporal en edición
+  const handleRemoveSkill = (skillId) => {
+    setEditedSkills(prev => {
+      const updated = { ...prev };
+      delete updated[skillId];
+      return updated;
+    });
+  };
+
+  // Añadir competencia del rol al plan temporal en edición
+  const handleAddSkill = (skillId) => {
+    if (!skillId) return;
+    const origSkill = userRoleSkills.find(s => s.id === skillId);
+    if (!origSkill) return;
+
+    if (Object.keys(editedSkills).length >= 3) {
+      return;
+    }
+
+    setEditedSkills(prev => ({
+      ...prev,
+      [skillId]: {
+        skillName: origSkill.name,
+        category: origSkill.category || 'Técnica',
+        targetLevel: Math.min((origSkill.level || 1) + 1, 5),
+        action70: '',
+        action20: '',
+        action10: '',
+        isCustom: false
+      }
+    }));
+  };
+
+  // Crear una nueva habilidad personalizada directamente en el plan temporal
+  const handleCreateCustomSkill = (e) => {
+    if (e) e.preventDefault();
+    if (!customSkillName.trim()) return;
+    
+    if (Object.keys(editedSkills).length >= 3) {
+      alert("Has alcanzado el límite máximo de 3 competencias para este plan anual.");
+      return;
+    }
+
+    const customId = `custom-plan-${Date.now()}`;
+    setEditedSkills(prev => ({
+      ...prev,
+      [customId]: {
+        skillName: customSkillName.trim(),
+        category: customSkillCategory,
+        targetLevel: 3,
+        action70: '',
+        action20: '',
+        action10: '',
+        isCustom: true
+      }
+    }));
+
+    setCustomSkillName('');
+    setShowCustomSkillForm(false);
+  };
+
   // Guardar cambios en el plan (Borrador o Pendiente)
   const handleSavePlan = (submitForApproval = false) => {
     const formattedSkills = Object.entries(editedSkills).map(([skillId, fields]) => {
       const origSkill = userRoleSkills.find(s => s.id === skillId) || {};
       return {
         skillId,
-        skillName: origSkill.name || skillId,
+        skillName: fields.skillName || origSkill.name || skillId,
+        category: fields.category || origSkill.category || 'Técnica',
         targetLevel: Number(fields.targetLevel),
         action70: fields.action70,
         action20: fields.action20,
-        action10: fields.action10
+        action10: fields.action10,
+        isCustom: fields.isCustom || !origSkill.id
       };
     });
 
@@ -131,36 +192,17 @@ export const DevelopmentPlans = () => {
 
   // Inicializar un nuevo plan en blanco para el año actual
   const handleInitializeNewPlan = () => {
-    const formattedSkills = userRoleSkills.map(s => ({
-      skillId: s.id,
-      skillName: s.name,
-      targetLevel: Math.min((s.level || 1) + 1, 5),
-      action70: "",
-      action20: "",
-      action10: ""
-    }));
-
     const newPlan = {
       employeeId: currentUser.id,
       year: selectedYear,
       status: "Borrador",
       managerComment: "",
-      skills: formattedSkills
+      skills: []
     };
 
     saveDevelopmentPlan(newPlan);
     
-    // Iniciar edición automáticamente
-    const skillsData = {};
-    formattedSkills.forEach(s => {
-      skillsData[s.skillId] = {
-        targetLevel: s.targetLevel,
-        action70: "",
-        action20: "",
-        action10: ""
-      };
-    });
-    setEditedSkills(skillsData);
+    setEditedSkills({});
     setIsEditing(true);
   };
 
@@ -328,12 +370,24 @@ export const DevelopmentPlans = () => {
                 </span>
 
                 {!isEditing && (myPlan.status === 'Borrador' || myPlan.status === 'Revision') && (
-                  <button 
-                    onClick={handleStartEdit}
-                    className="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl shadow-md transition-all flex items-center gap-1 cursor-pointer"
-                  >
-                    <Edit3 size={13} /> Editar Plan
-                  </button>
+                  <div className="flex items-center gap-2">
+                    <button 
+                      onClick={handleStartEdit}
+                      className="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl shadow-md transition-all flex items-center gap-1 cursor-pointer"
+                    >
+                      <Edit3 size={13} /> Editar Plan
+                    </button>
+                    <button 
+                      onClick={() => {
+                        if (window.confirm("¿Estás seguro de que deseas eliminar este plan de desarrollo por completo? Esta acción no se puede deshacer.")) {
+                          deleteDevelopmentPlan(currentUser.id, selectedYear);
+                        }
+                      }}
+                      className="px-3.5 py-1.5 bg-rose-600 hover:bg-rose-750 text-white text-xs font-bold rounded-xl shadow-md transition-all flex items-center gap-1 cursor-pointer"
+                    >
+                      <Trash2 size={13} /> Eliminar Plan
+                    </button>
+                  </div>
                 )}
               </div>
             ) : (
@@ -363,98 +417,253 @@ export const DevelopmentPlans = () => {
               {isEditing ? (
                 // --- VISTA DE EDICIÓN ---
                 <div className="space-y-6">
-                  <div className="grid grid-cols-1 gap-6">
-                    {userRoleSkills.map(skill => {
-                      const fields = editedSkills[skill.id] || { targetLevel: 3, action70: '', action20: '', action10: '' };
-                      return (
-                        <div key={skill.id} className="bg-white rounded-3xl p-5 border border-slate-100 text-left space-y-4 shadow-sm hover:border-blue-200 transition-all">
-                          
-                          {/* Fila superior: Info del Skill y Objetivo */}
-                          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-slate-100 pb-3">
-                            <div className="space-y-0.5">
-                              <h4 className="font-extrabold text-slate-800 text-sm">{skill.name}</h4>
-                              <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">{skill.category} • Nivel Actual: {skill.level} / Requerido: {skill.required}</p>
+                  
+                  {/* Selector y Limitador de Skills */}
+                  <div className="bg-slate-50 rounded-2xl p-5 border border-slate-100 text-left space-y-3.5">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                      <div>
+                        <h4 className="font-extrabold text-slate-800 text-xs uppercase tracking-wider">Añadir competencias al PDI</h4>
+                        <p className="text-[10px] text-slate-400 mt-0.5">Elige hasta un máximo de 3 habilidades del rol para enfocar tu desarrollo anual.</p>
+                      </div>
+                      
+                      <div className="bg-white dark:bg-slate-900 border border-slate-200 px-3 py-1 rounded-xl font-bold text-[10px] shrink-0 text-slate-650 w-fit">
+                        Seleccionadas: <strong className="text-slate-800">{Object.keys(editedSkills).length} / 3</strong>
+                      </div>
+                    </div>
+
+                    {Object.keys(editedSkills).length < 3 ? (
+                      <div className="space-y-3">
+                        {!showCustomSkillForm ? (
+                          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                            <select
+                              onChange={(e) => {
+                                handleAddSkill(e.target.value);
+                                e.target.value = ""; // Reset dropdown selection
+                              }}
+                              className="flex-1 px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 cursor-pointer"
+                            >
+                              <option value="">-- Selecciona una habilidad de tu rol para añadir --</option>
+                              {userRoleSkills
+                                .filter(skill => !editedSkills[skill.id])
+                                .map(skill => (
+                                  <option key={skill.id} value={skill.id}>
+                                    {skill.name} ({skill.category})
+                                  </option>
+                                ))
+                              }
+                            </select>
+                            
+                            <button
+                              type="button"
+                              onClick={() => setShowCustomSkillForm(true)}
+                              className="px-4 py-2 bg-blue-50 text-blue-600 hover:bg-blue-100 text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer border border-blue-200/50 animate-in fade-in duration-200"
+                            >
+                              <Plus size={14} /> Crear Nueva Habilidad
+                            </button>
+                          </div>
+                        ) : (
+                          <div className="bg-slate-100/60 p-4 rounded-xl border border-slate-200/60 space-y-3 animate-in slide-in-from-top-2 duration-200">
+                            <div className="flex justify-between items-center">
+                              <h5 className="text-[10px] font-black text-slate-500 uppercase tracking-wider">Crear Habilidad Personalizada</h5>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setShowCustomSkillForm(false);
+                                  setCustomSkillName('');
+                                }}
+                                className="text-slate-400 hover:text-slate-650 cursor-pointer"
+                              >
+                                <X size={14} />
+                              </button>
                             </div>
                             
-                            {/* Selector de nivel objetivo */}
-                            <div className="flex items-center gap-2 shrink-0">
-                              <label className="text-[10px] font-black text-slate-500 uppercase tracking-wider">Objetivo:</label>
+                            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                              <input
+                                type="text"
+                                value={customSkillName}
+                                onChange={(e) => setCustomSkillName(e.target.value)}
+                                placeholder="Nombre de la nueva habilidad (ej. Python Avanzado)..."
+                                className="flex-1 px-3 py-1.5 bg-white border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 focus:border-blue-500 focus:outline-none"
+                              />
+                              
                               <select
-                                value={fields.targetLevel}
-                                onChange={(e) => {
-                                  setEditedSkills(prev => ({
-                                    ...prev,
-                                    [skill.id]: { ...fields, targetLevel: Number(e.target.value) }
-                                  }));
-                                }}
-                                className="px-3 py-1 bg-slate-50 border border-slate-200 rounded-xl text-xs font-extrabold text-slate-700 cursor-pointer"
+                                value={customSkillCategory}
+                                onChange={(e) => setCustomSkillCategory(e.target.value)}
+                                className="px-3 py-1.5 bg-white border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 cursor-pointer focus:border-blue-500 focus:outline-none"
                               >
-                                {[1, 2, 3, 4, 5].map(n => (
-                                  <option key={n} value={n}>Nivel {n}</option>
-                                ))}
+                                <option value="Técnica">Técnica</option>
+                                <option value="Soft Skill">Soft Skill</option>
+                                <option value="Metodología">Metodología</option>
+                                <option value="Negocio">Negocio</option>
                               </select>
+                              
+                              <button
+                                type="button"
+                                onClick={handleCreateCustomSkill}
+                                disabled={!customSkillName.trim()}
+                                className="px-4 py-1.5 bg-[#007A33] hover:bg-[#006028] disabled:bg-slate-200 disabled:cursor-not-allowed text-white text-xs font-bold rounded-xl transition-all cursor-pointer shadow-sm"
+                              >
+                                Añadir
+                              </button>
                             </div>
                           </div>
+                        )}
+                      </div>
+                    ) : (
+                      <div className="p-3 bg-blue-50 text-blue-800 border border-blue-150 rounded-xl flex items-center gap-2 text-xs font-semibold">
+                        <AlertCircle size={14} className="text-blue-600" />
+                        <span>Has alcanzado el límite máximo de 3 competencias para este plan anual. Borra alguna para añadir otra diferente.</span>
+                      </div>
+                    )}
+                  </div>
 
-                          {/* Campos 70-20-10 */}
-                          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-                            {/* 70% Experiencia */}
-                            <div className="space-y-1.5">
-                              <label className="text-[10px] font-black text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-150 uppercase tracking-widest inline-block">70% Experiencia</label>
-                              <p className="text-[9px] text-slate-400">Acciones en el puesto de trabajo diario (proyectos, retos).</p>
-                              <textarea
-                                value={fields.action70}
-                                onChange={(e) => {
-                                  setEditedSkills(prev => ({
-                                    ...prev,
-                                    [skill.id]: { ...fields, action70: e.target.value }
-                                  }));
-                                }}
-                                placeholder="Ej: Liderar el refactor del módulo de autenticación con el nuevo estándar..."
-                                rows={3}
-                                className="w-full text-xs font-medium p-3 border border-slate-200 bg-white rounded-xl focus:border-blue-500 resize-none"
-                              />
+                  {/* Listado de habilidades en el plan */}
+                  <div className="grid grid-cols-1 gap-6">
+                    {Object.keys(editedSkills).length === 0 ? (
+                      <div className="p-12 text-center bg-white border border-slate-100 rounded-3xl text-slate-400 flex flex-col items-center gap-2 shadow-3xs">
+                        <HelpCircle size={28} className="opacity-30 text-slate-500" />
+                        <h4 className="text-xs font-bold text-slate-700">Tu plan está vacío</h4>
+                        <p className="text-[10px] text-slate-400 max-w-xs">Selecciona alguna de las competencias de tu rol en el selector superior para empezar a configurar las acciones.</p>
+                      </div>
+                    ) : (
+                      Object.keys(editedSkills).map(skillId => {
+                        const fields = editedSkills[skillId] || { targetLevel: 3, action70: '', action20: '', action10: '', skillName: '', category: 'Técnica', isCustom: false };
+                        const skill = userRoleSkills.find(s => s.id === skillId) || { 
+                          id: skillId, 
+                          name: fields.skillName || skillId, 
+                          category: fields.category || 'Técnica', 
+                          level: 0, 
+                          required: 0,
+                          isCustom: true
+                        };
+                        return (
+                          <div key={skill.id} className="bg-white rounded-3xl p-5 border border-slate-100 text-left space-y-4 shadow-sm hover:border-blue-200 transition-all relative group/card">
+                            
+                            {/* Fila superior: Info del Skill, Objetivo y botón de borrar */}
+                            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-slate-100 pb-3">
+                              <div className="space-y-1 flex-1 w-full">
+                                {fields.isCustom ? (
+                                  <div className="flex flex-col gap-1 w-full">
+                                    <label className="text-[9px] font-black text-slate-450 uppercase tracking-wider block">Nombre Habilidad Personalizada:</label>
+                                    <input
+                                      type="text"
+                                      value={fields.skillName || ''}
+                                      onChange={(e) => {
+                                        const newName = e.target.value;
+                                        setEditedSkills(prev => ({
+                                          ...prev,
+                                          [skillId]: { ...prev[skillId], skillName: newName }
+                                        }));
+                                      }}
+                                      className="font-extrabold text-slate-800 text-sm px-2.5 py-1 bg-slate-50 border border-slate-200 rounded-lg focus:bg-white focus:border-blue-500 focus:outline-none w-full max-w-sm"
+                                      placeholder="Ej. Python Avanzado..."
+                                    />
+                                    <span className="text-[8px] font-black text-blue-700 bg-blue-50 px-1.5 py-0.2 rounded border border-blue-150 uppercase tracking-widest block w-fit mt-1">
+                                      {fields.category || 'Técnica'} • Personalizada
+                                    </span>
+                                  </div>
+                                ) : (
+                                  <>
+                                    <h4 className="font-extrabold text-slate-800 text-sm flex items-center gap-2">
+                                      {skill.name}
+                                    </h4>
+                                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">{skill.category} • Nivel Actual: {skill.level} / Requerido: {skill.required}</p>
+                                  </>
+                                )}
+                              </div>
+                              
+                              <div className="flex items-center gap-4.5 shrink-0 self-end sm:self-center">
+                                {/* Selector de nivel objetivo */}
+                                <div className="flex items-center gap-2">
+                                  <label className="text-[10px] font-black text-slate-500 uppercase tracking-wider">Objetivo:</label>
+                                  <select
+                                    value={fields.targetLevel}
+                                    onChange={(e) => {
+                                      setEditedSkills(prev => ({
+                                        ...prev,
+                                        [skill.id]: { ...fields, targetLevel: Number(e.target.value) }
+                                      }));
+                                    }}
+                                    className="px-3 py-1 bg-slate-50 border border-slate-200 rounded-xl text-xs font-extrabold text-slate-700 cursor-pointer"
+                                  >
+                                    {[1, 2, 3, 4, 5].map(n => (
+                                      <option key={n} value={n}>Nivel {n}</option>
+                                    ))}
+                                  </select>
+                                </div>
+
+                                {/* Botón de borrar skill de este plan */}
+                                <button
+                                  type="button"
+                                  onClick={() => handleRemoveSkill(skill.id)}
+                                  className="p-1.5 text-rose-500 hover:text-rose-700 hover:bg-rose-50 dark:hover:bg-rose-950/20 rounded-xl cursor-pointer transition-colors"
+                                  title="Quitar esta habilidad de mi plan"
+                                >
+                                  <X size={15} />
+                                </button>
+                              </div>
                             </div>
 
-                            {/* 20% Exposición */}
-                            <div className="space-y-1.5">
-                              <label className="text-[10px] font-black text-blue-700 bg-blue-50 px-2 py-0.5 rounded-md border border-blue-150 uppercase tracking-widest inline-block">20% Exposición</label>
-                              <p className="text-[9px] text-slate-400">Aprendizaje relacional (feedback, mentoring, shadowing).</p>
-                              <textarea
-                                value={fields.action20}
-                                onChange={(e) => {
-                                  setEditedSkills(prev => ({
-                                    ...prev,
-                                    [skill.id]: { ...fields, action20: e.target.value }
-                                  }));
-                                }}
-                                placeholder="Ej: Shadowing mensual con el Arquitecto de Software y revisiones cruzadas..."
-                                rows={3}
-                                className="w-full text-xs font-medium p-3 border border-slate-200 bg-white rounded-xl focus:border-blue-500 resize-none"
-                              />
-                            </div>
+                            {/* Campos 70-20-10 */}
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                              {/* 70% Experiencia */}
+                              <div className="space-y-1.5">
+                                <label className="text-[10px] font-black text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-150 uppercase tracking-widest inline-block">70% Experiencia</label>
+                                <p className="text-[9px] text-slate-400">Acciones en el puesto de trabajo diario (proyectos, retos).</p>
+                                <textarea
+                                  value={fields.action70}
+                                  onChange={(e) => {
+                                    setEditedSkills(prev => ({
+                                      ...prev,
+                                      [skill.id]: { ...fields, action70: e.target.value }
+                                    }));
+                                  }}
+                                  placeholder="Ej: Liderar el refactor del módulo de autenticación con el nuevo estándar..."
+                                  rows={3}
+                                  className="w-full text-xs font-medium p-3 border border-slate-200 bg-white rounded-xl focus:border-blue-500 resize-none"
+                                />
+                              </div>
 
-                            {/* 10% Educación */}
-                            <div className="space-y-1.5">
-                              <label className="text-[10px] font-black text-purple-700 bg-purple-50 px-2 py-0.5 rounded-md border border-purple-150 uppercase tracking-widest inline-block">10% Educación</label>
-                              <p className="text-[9px] text-slate-400">Formación reglada, lecturas estructuradas y certificaciones.</p>
-                              <textarea
-                                value={fields.action10}
-                                onChange={(e) => {
-                                  setEditedSkills(prev => ({
-                                    ...prev,
-                                    [skill.id]: { ...fields, action10: e.target.value }
-                                  }));
-                                }}
-                                placeholder="Ej: Realizar el curso oficial de NestJS y obtener la certificación en la plataforma de Cajamar..."
-                                rows={3}
-                                className="w-full text-xs font-medium p-3 border border-slate-200 bg-white rounded-xl focus:border-blue-500 resize-none"
-                              />
+                              {/* 20% Exposición */}
+                              <div className="space-y-1.5">
+                                <label className="text-[10px] font-black text-blue-700 bg-blue-50 px-2 py-0.5 rounded-md border border-blue-150 uppercase tracking-widest inline-block">20% Exposición</label>
+                                <p className="text-[9px] text-slate-400">Aprendizaje relacional (feedback, mentoring, shadowing).</p>
+                                <textarea
+                                  value={fields.action20}
+                                  onChange={(e) => {
+                                    setEditedSkills(prev => ({
+                                      ...prev,
+                                      [skill.id]: { ...fields, action20: e.target.value }
+                                    }));
+                                  }}
+                                  placeholder="Ej: Shadowing mensual con el Arquitecto de Software y revisiones cruzadas..."
+                                  rows={3}
+                                  className="w-full text-xs font-medium p-3 border border-slate-200 bg-white rounded-xl focus:border-blue-500 resize-none"
+                                />
+                              </div>
+
+                              {/* 10% Educación */}
+                              <div className="space-y-1.5">
+                                <label className="text-[10px] font-black text-purple-700 bg-purple-50 px-2 py-0.5 rounded-md border border-purple-150 uppercase tracking-widest inline-block">10% Educación</label>
+                                <p className="text-[9px] text-slate-400">Formación reglada, lecturas estructuradas y certificaciones.</p>
+                                <textarea
+                                  value={fields.action10}
+                                  onChange={(e) => {
+                                    setEditedSkills(prev => ({
+                                      ...prev,
+                                      [skill.id]: { ...fields, action10: e.target.value }
+                                    }));
+                                  }}
+                                  placeholder="Ej: Realizar el curso oficial de NestJS y obtener la certificación en la plataforma de Cajamar..."
+                                  rows={3}
+                                  className="w-full text-xs font-medium p-3 border border-slate-200 bg-white rounded-xl focus:border-blue-500 resize-none"
+                                />
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      );
-                    })}
+                        );
+                      })
+                    )}
                   </div>
 
                   {/* Acciones de edición */}
@@ -473,7 +682,8 @@ export const DevelopmentPlans = () => {
                     </button>
                     <button
                       onClick={() => handleSavePlan(true)}
-                      className="px-5 py-2 bg-[#007A33] hover:bg-[#006028] text-white text-xs font-bold rounded-xl shadow-md shadow-emerald-700/10 flex items-center gap-1.5 cursor-pointer"
+                      disabled={Object.keys(editedSkills).length === 0}
+                      className="px-5 py-2 bg-[#007A33] hover:bg-[#006028] disabled:bg-slate-200 disabled:cursor-not-allowed text-white text-xs font-bold rounded-xl shadow-md shadow-emerald-700/10 flex items-center gap-1.5 cursor-pointer"
                     >
                       <Check size={13} /> Enviar a Aprobación
                     </button>
@@ -491,7 +701,9 @@ export const DevelopmentPlans = () => {
                           <div className="flex justify-between items-center border-b border-slate-100/50 pb-2">
                             <div>
                               <h4 className="font-extrabold text-slate-800 text-sm">{s.skillName}</h4>
-                              <p className="text-[9px] text-slate-400 font-bold uppercase tracking-wider">Nivel Actual: {origSkill.level || 0} • Objetivo: {s.targetLevel}</p>
+                              <p className="text-[9px] text-slate-400 font-bold uppercase tracking-wider">
+                                {s.isCustom ? `${s.category || 'Personalizada'} • Habilidad Personalizada` : `${s.category || origSkill.category || 'Técnica'} • Nivel Actual: ${origSkill.level || 0}`}
+                              </p>
                             </div>
 
                             <span className="text-[10px] font-black px-2.5 py-1 bg-blue-50 text-blue-800 border border-blue-150 rounded-lg">
@@ -628,7 +840,12 @@ export const DevelopmentPlans = () => {
                     {selectedReportPlan.skills?.map(s => (
                       <div key={s.skillId} className="p-4 bg-slate-50/50 rounded-2xl border border-slate-100 space-y-3">
                         <div className="flex justify-between items-center border-b border-slate-150 pb-2">
-                          <span className="font-extrabold text-slate-800 text-xs">{s.skillName}</span>
+                          <div>
+                            <span className="font-extrabold text-slate-800 text-xs block">{s.skillName}</span>
+                            <span className="text-[8px] text-slate-400 font-bold uppercase tracking-wider">
+                              {s.isCustom ? `${s.category || 'Personalizada'} • Habilidad Personalizada` : `${s.category || 'Técnica'}`}
+                            </span>
+                          </div>
                           <span className="text-[9px] font-extrabold px-2 py-0.5 bg-blue-50 text-blue-700 border border-blue-150 rounded-md">
                             Objetivo: Nivel {s.targetLevel}
                           </span>
