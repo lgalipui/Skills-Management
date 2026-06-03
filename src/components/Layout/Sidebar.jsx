@@ -17,7 +17,8 @@ import {
   UserCheck,
   GitFork,
   Map,
-  Scale
+  Scale,
+  FileText
 } from 'lucide-react';
 import clsx from 'clsx';
 
@@ -37,6 +38,7 @@ export const Sidebar = () => {
     { path: '/mybadges', label: 'MyBadges', icon: Award, roles: ['Employee', 'Manager', 'RRHH'] },
     { path: '/peer-nomination', label: 'Nominación de Peers', icon: UserCheck, roles: ['Employee', 'Manager', 'RRHH'] },
     { path: '/skills-review', label: 'Skills Review', icon: Users, roles: ['Employee', 'Manager', 'RRHH'] },
+    { path: '/development-plans', label: 'Planes de Desarrollo', icon: FileText, roles: ['Employee', 'Manager', 'RRHH'] },
     { path: '/talentscout', label: 'Internal Talent Scout', icon: Search, roles: ['RRHH'] },
     { path: '/hr-dashboard', label: 'Dashboard RRHH', icon: BarChart3, roles: ['RRHH'] },
     { path: '/config-360', label: 'Configuración Skill Review', icon: SlidersHorizontal, roles: ['RRHH'] },

@@ -132,6 +132,126 @@ const initialPeerReviews = [
   }
 ];
 
+const initialDevPlans = [
+  {
+    id: "pdi-1",
+    employeeId: 1, // Ana García
+    year: 2025,
+    status: "Aprobado", // Aprobado, Pendiente, Borrador, Revision
+    managerComment: "Excelente plan de desarrollo. Foco claro en potenciar el desarrollo de APIs y metodologías ágiles en el equipo.",
+    skills: [
+      {
+        skillId: "s1",
+        skillName: "React",
+        targetLevel: 4,
+        action70: "Liderar el rediseño responsivo de la interfaz de la pasarela de pagos del portal de canales.",
+        action20: "Sesiones de feedback técnico y mentoría semanal con Carlos Martínez (Tech Lead).",
+        action10: "Completar el Bootcamp corporativo de React Avanzado y optimización de rendimiento."
+      },
+      {
+        skillId: "s2",
+        skillName: "Node.js",
+        targetLevel: 3,
+        action70: "Escribir e integrar microservicios para la carga asíncrona de archivos y generación de PDFs.",
+        action20: "Shadowing con Miguel Hernández (Lead Architect) en diseño de APIs empresariales.",
+        action10: "Curso en línea de Backend robusto con Node y NestJS."
+      },
+      {
+        skillId: "s3",
+        skillName: "Agile",
+        targetLevel: 3,
+        action70: "Facilitar las dailies y refinamientos del equipo de desarrollo core.",
+        action20: "Recibir mentoría y soporte continuo de Sofía Ramos (Scrum Master).",
+        action10: "Taller interno de metodologías ágiles y ceremonias de Cajamar."
+      }
+    ]
+  },
+  {
+    id: "pdi-2",
+    employeeId: 1, // Ana García
+    year: 2026,
+    status: "Borrador",
+    managerComment: "",
+    skills: [
+      {
+        skillId: "s1",
+        skillName: "React",
+        targetLevel: 5,
+        action70: "Liderar la arquitectura de componentes y la migración a React 19.",
+        action20: "Participar en las comunidades internas de frontend en la organización.",
+        action10: "Leer documentación oficial sobre React Server Components y técnicas de renderizado."
+      },
+      {
+        skillId: "s2",
+        skillName: "Node.js",
+        targetLevel: 4,
+        action70: "Diseñar el nuevo motor de eventos asíncronos basado en Apache Kafka.",
+        action20: "Sesiones semanales de pair programming con Miguel Hernández.",
+        action10: "Realizar el curso avanzado de arquitecturas de microservicios distribuidos."
+      }
+    ]
+  },
+  {
+    id: "pdi-3",
+    employeeId: 4, // Laura Gómez
+    year: 2026,
+    status: "Pendiente",
+    managerComment: "",
+    skills: [
+      {
+        skillId: "s1",
+        skillName: "React",
+        targetLevel: 3,
+        action70: "Construir e integrar componentes reutilizables en el sistema de diseño de canales digitales.",
+        action20: "Sesiones mensuales de pair programming con Ana García.",
+        action10: "Completar el curso de React Intermedio de Cajamar."
+      },
+      {
+        skillId: "s2",
+        skillName: "Node.js",
+        targetLevel: 2,
+        action70: "Desarrollar endpoints básicos y validaciones de datos con Express en microservicios sencillos.",
+        action20: "Recibir revisiones constantes de código por parte de su responsable.",
+        action10: "Taller de iniciación a Node.js y desarrollo de APIs básicas."
+      }
+    ]
+  },
+  {
+    id: "pdi-4",
+    employeeId: 5, // Javier Ruiz
+    year: 2025,
+    status: "Aprobado",
+    managerComment: "Plan enfocado adecuadamente en el backend y la optimización de base de datos relacionales. Aprobado.",
+    skills: [
+      {
+        skillId: "s2",
+        skillName: "Node.js",
+        targetLevel: 4,
+        action70: "Refactorizar endpoints antiguos para mejorar el rendimiento de la persistencia de base de datos.",
+        action20: "Revisar arquitectura con Miguel Hernández en reuniones bisemanales.",
+        action10: "Curso especializado de NestJS Avanzado en Udemy."
+      }
+    ]
+  },
+  {
+    id: "pdi-5",
+    employeeId: 6, // Sofía Ramos
+    year: 2026,
+    status: "Aprobado",
+    managerComment: "Excelente enfoque en liderar la agilidad a escala en la división de Canales. Aprobado y apoyado.",
+    skills: [
+      {
+        skillId: "s3",
+        skillName: "Agile",
+        targetLevel: 5,
+        action70: "Orquestar el escalado de agilidad en toda la Subdirección General de Tecnología mediante SAFe.",
+        action20: "Mentoría a nuevos Scrum Masters e intercambio de buenas prácticas en comunidades.",
+        action10: "Obtención de la certificación de Agile Coach Avanzado."
+      }
+    ]
+  }
+];
+
 export const AuthProvider = ({ children }) => {
   const [darkMode, setDarkMode] = useState(() => {
     const saved = localStorage.getItem('darkMode');
@@ -161,6 +281,12 @@ export const AuthProvider = ({ children }) => {
   const [reviewConfigs, setReviewConfigs] = useState(initialReviewConfigs);
   const [peerNominations, setPeerNominations] = useState(initialPeerNominations);
   const [peerReviews, setPeerReviews] = useState(initialPeerReviews);
+
+  // Estado para Planes de Desarrollo Individual (PDI)
+  const [developmentPlans, setDevelopmentPlans] = useState(() => {
+    const saved = localStorage.getItem('cajamar_development_plans');
+    return saved ? JSON.parse(saved) : initialDevPlans;
+  });
 
   // Estados para Itinerarios de Carrera (Career Paths)
   const [careerPaths, setCareerPaths] = useState([
@@ -691,6 +817,30 @@ export const AuthProvider = ({ children }) => {
     });
   };
 
+  // Métodos para Plan de Desarrollo Individual (PDI)
+  const saveDevelopmentPlan = (plan) => {
+    setDevelopmentPlans(prev => {
+      const existsIdx = prev.findIndex(p => p.employeeId === Number(plan.employeeId) && p.year === Number(plan.year));
+      let updated;
+      if (existsIdx >= 0) {
+        updated = prev.map((p, idx) => idx === existsIdx ? { ...p, ...plan, employeeId: Number(plan.employeeId), year: Number(plan.year) } : p);
+      } else {
+        const nextId = `pdi-${Date.now()}`;
+        updated = [...prev, { ...plan, id: nextId, employeeId: Number(plan.employeeId), year: Number(plan.year) }];
+      }
+      localStorage.setItem('cajamar_development_plans', JSON.stringify(updated));
+      return updated;
+    });
+  };
+
+  const updatePlanStatus = (planId, status, managerComment) => {
+    setDevelopmentPlans(prev => {
+      const updated = prev.map(p => p.id === planId ? { ...p, status, managerComment: managerComment || "" } : p);
+      localStorage.setItem('cajamar_development_plans', JSON.stringify(updated));
+      return updated;
+    });
+  };
+
   return (
     <AuthContext.Provider value={{ 
       darkMode,
@@ -745,7 +895,10 @@ export const AuthProvider = ({ children }) => {
       progressionCriteria,
       saveProgressionCriteria,
       employeeDossier,
-      setEmployeeDossier
+      setEmployeeDossier,
+      developmentPlans,
+      saveDevelopmentPlan,
+      updatePlanStatus
     }}>
       {children}
     </AuthContext.Provider>

@@ -20,6 +20,7 @@ import { SkillsReviewConfig } from './pages/SkillsReviewConfig';
 import { CareerPaths } from './pages/CareerPaths';
 import { HrCareerManagement } from './pages/HrCareerManagement';
 import { HrCalibration } from './pages/HrCalibration';
+import { DevelopmentPlans } from './pages/DevelopmentPlans';
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
             <Route path="/myskills" element={<MySkills />} />
             <Route path="/peer-nomination" element={<PeerNomination />} />
             <Route path="/skills-review" element={<SkillsReview />} />
+            <Route path="/development-plans" element={<DevelopmentPlans />} />
             <Route path="/myupskilling" element={<MyUpskilling />} />
             <Route path="/mybadges" element={<MyBadges />} />
             <Route path="/mynewroles" element={<MyNewRoles />} />
